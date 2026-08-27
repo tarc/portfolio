@@ -1,0 +1,25 @@
+# devenv
+.devenv
+devenv.local.nix
+
+# claude
+**/.claude/settings.local.json
+.claude/settings.json
+.claude/agents
+.claude/commands
+.mcp.json
+.devcontainer.json
+
+# opencode
+opencode.jsonc
+.opencode/commands
+
+# node / next.js
+node_modules
+.next
+out
+*.log
+_pagefind/
+
+# publish worktree
+.worktree-pages
