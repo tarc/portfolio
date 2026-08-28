@@ -1,6 +1,21 @@
+<div align="center">
+
 # Portfolio
 
-Personal portfolio site for Tarcísio G. Rodrigues, built with [Astro](https://astro.build), React, and Tailwind CSS. Deployed to [Codeberg Pages](https://codeberg.page/) at [tarcisio.codeberg.page](https://tarcisio.codeberg.page/).
+**Personal portfolio site for Tarcísio G. Rodrigues**
+
+<p>
+<a href="https://devenv.sh" target="_blank">
+  <img src="https://devenv.sh/assets/devenv-badge.svg"/>
+</a>
+</p>
+
+**[Live Site](https://tarcisio.codeberg.page/)** &middot;
+[Blog](https://tarcisio.codeberg.page/blog/)
+
+</div>
+
+Built with [Astro](https://astro.build), React, and Tailwind CSS, and deployed to [Codeberg Pages](https://codeberg.page/).
 
 ## Project Structure
 
