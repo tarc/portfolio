@@ -1,0 +1,25 @@
+when:
+  - event: [push, manual]
+    branch: main
+
+steps:
+  - name: build
+    image: node:22
+    commands:
+      - npm ci
+      - npx astro build
+
+  - name: deploy
+    image: alpine/git
+    environment:
+      CODEBERG_TOKEN:
+        from_secret: codeberg_token
+    commands:
+      - git config --global user.name "Woodpecker CI"
+      - git config --global user.email "ci@codeberg.org"
+      - cd dist
+      - git init
+      - git checkout -b pages
+      - git add -A
+      - git commit -m "Deploy $CI_COMMIT_SHA"
+      - git push --force https://tarcisio:$${CODEBERG_TOKEN}@codeberg.org/tarcisio/pages.git pages:pages
