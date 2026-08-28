@@ -5,6 +5,9 @@
 **Personal portfolio site for Tarcísio G. Rodrigues**
 
 <p>
+<a href="https://ci.codeberg.org/repos/17883" target="_blank">
+  <img src="https://ci.codeberg.org/api/badges/17883/status.svg?events=push%2Cmanual" alt="status-badge" />
+</a>
 <a href="https://devenv.sh" target="_blank">
   <img src="https://devenv.sh/assets/devenv-badge.svg"/>
 </a>
