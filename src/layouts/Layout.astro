@@ -24,16 +24,36 @@ const {
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
 		<title>{title}</title>
+		<script is:inline>
+			const theme = localStorage.getItem('theme');
+			if (theme === 'dark' || (!theme && matchMedia('(prefers-color-scheme: dark)').matches)) {
+				document.documentElement.classList.add('dark');
+			}
+		</script>
 	</head>
-	<body class="min-h-screen flex flex-col">
-		<header class="sticky top-0 z-10 backdrop-blur border-b border-gray-200 bg-white/80">
+	<body class="min-h-screen flex flex-col bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+		<header class="sticky top-0 z-10 backdrop-blur border-b border-gray-200 bg-white/80 dark:border-gray-800 dark:bg-gray-900/80">
 			<nav class="max-w-4xl mx-auto flex items-center justify-between px-4 py-3">
 				<a href="/" class="font-semibold">Portfolio</a>
-				<div class="flex gap-6 text-sm">
-					<a href="/#about" class="hover:text-gray-600">About</a>
-					<a href="/#projects" class="hover:text-gray-600">Projects</a>
-					<a href="/#contact" class="hover:text-gray-600">Contact</a>
-					<a href="/blog" class="hover:text-gray-600">Blog</a>
+				<div class="flex items-center gap-6 text-sm">
+					<a href="/#about" class="hover:text-gray-600 dark:hover:text-gray-300">About</a>
+					<a href="/#projects" class="hover:text-gray-600 dark:hover:text-gray-300">Projects</a>
+					<a href="/#contact" class="hover:text-gray-600 dark:hover:text-gray-300">Contact</a>
+					<a href="/blog" class="hover:text-gray-600 dark:hover:text-gray-300">Blog</a>
+					<button
+						id="theme-toggle"
+						type="button"
+						aria-label="Toggle dark theme"
+						class="rounded p-1.5 hover:bg-gray-100 dark:hover:bg-gray-800"
+					>
+						<svg class="hidden h-5 w-5 dark:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<circle cx="12" cy="12" r="4" />
+							<path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+						</svg>
+						<svg class="block h-5 w-5 dark:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+							<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+						</svg>
+					</button>
 				</div>
 			</nav>
 		</header>
@@ -42,10 +62,17 @@ const {
 			<slot />
 		</main>
 
-		<footer class="border-t border-gray-200">
-			<div class="max-w-4xl mx-auto px-4 py-6 text-sm text-gray-500">
+		<footer class="border-t border-gray-200 dark:border-gray-800">
+			<div class="max-w-4xl mx-auto px-4 py-6 text-sm text-gray-500 dark:text-gray-400">
 				&copy; {new Date().getFullYear()} Portfolio. All rights reserved.
 			</div>
 		</footer>
+
+		<script is:inline>
+			document.getElementById('theme-toggle').addEventListener('click', () => {
+				const isDark = document.documentElement.classList.toggle('dark');
+				localStorage.setItem('theme', isDark ? 'dark' : 'light');
+			});
+		</script>
 	</body>
 </html>
