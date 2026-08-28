@@ -1,23 +1,8 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 
-const projects = [
-	{
-		name: 'Project One',
-		description: 'A short description of this project and the problem it solves.',
-		href: '#',
-	},
-	{
-		name: 'Project Two',
-		description: 'A short description of this project and the problem it solves.',
-		href: '#',
-	},
-	{
-		name: 'Project Three',
-		description: 'A short description of this project and the problem it solves.',
-		href: '#',
-	},
-];
+const projects = await getCollection('projects');
 ---
 
 <Layout title="Portfolio" description="Personal portfolio site">
@@ -42,11 +27,20 @@ const projects = [
 			{
 				projects.map((project) => (
 					<a
-						href={project.href}
+						href={project.data.link}
+						target="_blank"
+						rel="noopener noreferrer"
 						class="block rounded-lg border border-gray-200 p-6 hover:border-gray-400 transition-colors dark:border-gray-800 dark:hover:border-gray-600"
 					>
-						<h3 class="font-medium">{project.name}</h3>
-						<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">{project.description}</p>
+						<h3 class="font-medium">{project.data.title}</h3>
+						<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">{project.data.description}</p>
+						<div class="mt-3 flex flex-wrap gap-2">
+							{project.data.tags.map((tag) => (
+								<span class="rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-400">
+									{tag}
+								</span>
+							))}
+						</div>
 					</a>
 				))
 			}
