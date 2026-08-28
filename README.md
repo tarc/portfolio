@@ -1,46 +1,61 @@
-# Astro Starter Kit: Basics
+# Portfolio
 
-```sh
-npm create astro@latest -- --template basics
-```
+Personal portfolio site for Tarcísio G. Rodrigues, built with [Astro](https://astro.build), React, and Tailwind CSS. Deployed to [Codeberg Pages](https://codeberg.page/) at [tarcisio.codeberg.page](https://tarcisio.codeberg.page/).
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
+## Project Structure
 
 ```text
 /
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+├── public/                    # Static assets (favicon, etc.)
+├── src/
+│   ├── content/
+│   │   ├── blog/               # Blog posts (.md / .mdx)
+│   │   └── projects/           # Project entries (.md)
+│   ├── content.config.ts       # Content Collections schema
+│   ├── layouts/
+│   │   └── Layout.astro        # Shared shell: nav, footer, meta tags, dark mode
+│   ├── pages/
+│   │   ├── index.astro         # Single-page home (hero/about/projects/contact)
+│   │   └── blog/                # Blog listing and post routes
+│   └── styles/
+│       └── global.css          # Tailwind entrypoint + dark mode variant
+├── astro.config.mjs
+├── devenv.nix                  # Nix dev environment (Node, npm)
+└── justfile                    # Task runner recipes
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## Getting Started Locally
 
-## 🧞 Commands
+This project uses [devenv](https://devenv.sh/) to manage the Node.js toolchain, and [just](https://just.systems/) as a task runner. Both are provided by the Nix dev shell, so you don't need to install Node or npm yourself.
 
-All commands are run from the root of the project, from a terminal:
+1. Clone the repository:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+   ```sh
+   git clone ssh://git@codeberg.org/tarcisio/pages.git
+   cd pages
+   ```
 
-## 👀 Want to learn more?
+2. Install dependencies:
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+   ```sh
+   devenv shell -- just install
+   ```
+
+3. Start the dev server:
+
+   ```sh
+   devenv shell -- just dev
+   ```
+
+   The site is served in the background at `http://localhost:4321`. Manage it with `just dev-status`, `just dev-logs`, and `just dev-stop` (all run inside `devenv shell --`).
+
+Run `devenv shell -- just` with no arguments to see all available recipes (`build`, `preview`, etc.).
+
+If you have `direnv` set up, `devenv shell --` can be dropped and the recipes run directly (e.g. `just dev`).
+
+## Content
+
+- Blog posts live in `src/content/blog/` as Markdown or MDX files.
+- Projects live in `src/content/projects/` as Markdown files with `title`, `description`, `tags`, and `link` frontmatter.
+
+Both are validated against the schemas in `src/content.config.ts`.
