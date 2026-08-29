@@ -45,6 +45,12 @@
           allow = [
             "domain:github.com"
             "domain:docs.anthropic.com"
+            "domain:nendi-candra.vercel.app"
+            "domain:tarcisio.codeberg.page"
+            "domain:codeberg.org"
+            "domain:codeberg.page"
+            "domain:woodpecker-ci.org"
+            "domain:cdn.simpleicons.org"
           ];
         };
         Bash = {
@@ -53,6 +59,10 @@
             "nix-instantiate:*"
             "git:*"
             "jq:*"
+            "devenv shell -- npx astro:*"
+            "devenv shell -- astro dev:*"
+            "devenv shell -- just:*"
+            "curl:*"
           ];
         };
       };
