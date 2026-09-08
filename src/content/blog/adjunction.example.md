@@ -10,6 +10,8 @@ Is it possible to find another theory `U` that is also a solution to `P`? Such `
 
 We don't care about any generality here at all. It suffices to show some specific examples of `T`, `P`, and `U`.
 
+## Definition
+
 Formally, an adjunction between functors $F \dashv G$ gives a natural bijection
 
 $$\mathrm{Hom}_D(F(X), Y) \;\cong\; \mathrm{Hom}_C(X, G(Y))$$
