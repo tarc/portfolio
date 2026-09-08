@@ -8,8 +8,8 @@ const projects = await getCollection('projects');
 ---
 
 <Layout title="Portfolio" description="Personal portfolio site">
-	<section id="hero" class="max-w-4xl mx-auto px-4 py-8 text-left">
-		<h1 class="mt-8 mb-3 whitespace-nowrap text-[clamp(1.75rem,8vw,5.5rem)] font-bold leading-none">
+	<section id="hero" class="max-w-7xl mx-auto px-4 py-8 text-left">
+		<h1 class="mt-8 mb-3 whitespace-nowrap text-[clamp(1.75rem,9vw,7rem)] font-bold leading-none">
 			BACKEND ENGINEER
 		</h1>
 		<p class="mb-4 max-w-xl text-[1.2rem] text-gray-600 dark:text-gray-400">
@@ -18,16 +18,16 @@ const projects = await getCollection('projects');
 		</p>
 		<a
 			href="#projects"
-			class="inline-block rounded-md border border-gray-900 px-6 py-3 font-semibold uppercase tracking-wide transition-colors hover:bg-gray-900 hover:text-white dark:border-gray-100 dark:hover:bg-gray-100 dark:hover:text-gray-900"
+			class="inline-block rounded-md border border-cyan-600 px-6 py-3 font-semibold uppercase tracking-wide transition-colors hover:bg-cyan-600 hover:text-white dark:border-cyan-400 dark:hover:bg-cyan-400 dark:hover:text-gray-900"
 		>
 			Explore Projects →
 		</a>
 	</section>
 
-	<section id="about" class="max-w-4xl mx-auto px-4 pt-28 pb-6">
-		<div class="grid gap-6 sm:grid-cols-[1fr_240px] sm:items-start">
+	<section id="about" class="max-w-7xl mx-auto px-4 pt-28 pb-6">
+		<div class="grid gap-6 sm:grid-cols-[1fr_320px] sm:items-start">
 			<div>
-				<h2 class="mb-3 text-4xl font-bold uppercase tracking-tight md:text-5xl">About Me</h2>
+				<h2 class="mb-3 text-6xl font-bold uppercase tracking-tight md:text-7xl">About Me</h2>
 				<p class="mt-2 text-gray-600 dark:text-gray-400">
 					I build backend systems that run where milliseconds matter — market data feeds,
 					payment rails, and risk engines where a slow path is a broken path. As a Backend
@@ -41,20 +41,20 @@ const projects = await getCollection('projects');
 					observability, and squeezing performance out of every layer of the stack.
 				</p>
 			</div>
-			<div class="mx-auto aspect-square w-full max-w-[240px] overflow-hidden rounded-lg border border-gray-300 dark:border-gray-700">
+			<div class="mx-auto aspect-square w-full max-w-[320px] overflow-hidden rounded-lg border border-gray-300 dark:border-gray-700">
 				<Image
 					src={portrait}
 					alt="Portrait of Tarcísio G. Rodrigues"
-					width={240}
-					height={240}
+					width={320}
+					height={320}
 					class="h-full w-full object-cover grayscale"
 				/>
 			</div>
 		</div>
 	</section>
 
-	<section id="projects" class="max-w-4xl mx-auto px-4 pt-28 pb-6">
-		<h2 class="mb-3 text-4xl font-bold uppercase tracking-tight md:text-5xl">Featured Projects</h2>
+	<section id="projects" class="max-w-7xl mx-auto px-4 pt-28 pb-6">
+		<h2 class="mb-3 text-6xl font-bold uppercase tracking-tight md:text-7xl">Featured Projects</h2>
 		<p class="mb-4 max-w-2xl text-[1.1rem] text-gray-600 dark:text-gray-400">
 			A selection of side projects and open-source work.
 		</p>
@@ -84,8 +84,8 @@ const projects = await getCollection('projects');
 		</div>
 	</section>
 
-	<section id="contact" class="max-w-4xl mx-auto px-4 pt-28 pb-6 text-center">
-		<h2 class="mb-4 text-4xl font-bold uppercase tracking-tight md:text-5xl">Get in Touch</h2>
+	<section id="contact" class="max-w-7xl mx-auto px-4 pt-28 pb-6 text-center">
+		<h2 class="mb-4 text-6xl font-bold uppercase tracking-tight md:text-7xl">Get in Touch</h2>
 		<form class="mx-auto max-w-lg space-y-4 text-left">
 			<div>
 				<label class="mb-2 block text-sm text-gray-600 dark:text-gray-400">Email</label>
@@ -109,7 +109,7 @@ const projects = await getCollection('projects');
 			</div>
 			<button
 				type="submit"
-				class="w-full rounded-md border border-gray-900 px-6 py-3 font-semibold uppercase tracking-wide transition-colors hover:bg-gray-900 hover:text-white dark:border-gray-100 dark:hover:bg-gray-100 dark:hover:text-gray-900"
+				class="w-full rounded-md border border-cyan-600 px-6 py-3 font-semibold uppercase tracking-wide transition-colors hover:bg-cyan-600 hover:text-white dark:border-cyan-400 dark:hover:bg-cyan-400 dark:hover:text-gray-900"
 			>
 				Send Message →
 			</button>

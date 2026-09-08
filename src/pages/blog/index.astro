@@ -8,17 +8,17 @@ const posts = (await getCollection('blog')).sort(
 ---
 
 <Layout title="Blog" description="Posts and writing">
-	<section class="max-w-4xl mx-auto px-4 pt-28 pb-6">
-		<h1 class="text-4xl font-bold uppercase tracking-tight md:text-5xl">Blog</h1>
-		<ul class="mt-8 space-y-4">
+	<section class="max-w-7xl mx-auto px-4 pt-28 pb-6">
+		<h1 class="text-6xl font-bold uppercase tracking-tight md:text-7xl">Blog</h1>
+		<ul class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			{
 				posts.map((post) => (
 					<li>
 						<a
 							href={`/blog/${post.id}/`}
-							class="group block rounded-lg border border-gray-200 p-6 transition-colors hover:border-fuchsia-500 hover:shadow-[0_0_0_1px_rgba(217,70,239,0.3),0_0_16px_rgba(217,70,239,0.25)] dark:border-gray-800 dark:hover:border-fuchsia-400"
+							class="group block rounded-lg border border-gray-200 p-6 transition-colors hover:border-yellow-500 hover:shadow-[0_0_0_1px_rgba(234,179,8,0.3),0_0_16px_rgba(234,179,8,0.25)] dark:border-gray-800 dark:hover:border-yellow-400"
 						>
-							<h2 class="text-xl font-medium uppercase tracking-tight underline-offset-4 transition-colors group-hover:underline group-hover:text-fuchsia-600 dark:group-hover:text-fuchsia-400">
+							<h2 class="text-xl font-medium uppercase tracking-tight underline-offset-4 transition-colors group-hover:underline group-hover:text-yellow-600 dark:group-hover:text-yellow-400">
 								{post.data.title}
 							</h2>
 							<p class="text-sm text-gray-500 dark:text-gray-400">
