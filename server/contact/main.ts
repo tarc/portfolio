@@ -80,7 +80,7 @@ Deno.serve(async (req) => {
 			to: toEmail,
 			reply_to: email,
 			subject: `Portfolio contact form: ${email}`,
-			text: message,
+			text: `From: ${email}\n\n${message}`,
 		}),
 	});
 
