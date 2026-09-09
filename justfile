@@ -29,3 +29,9 @@ build:
 # Preview the production build locally
 preview:
     astro preview
+
+# Redeploy the contact form function to Deno Deploy. Org/app are already
+# recorded in deno.jsonc from the initial `deno deploy create`, so this just
+# uploads server/contact and promotes it straight to production.
+deploy-contact:
+    deno deploy server/contact --prod
