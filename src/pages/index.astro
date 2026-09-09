@@ -86,7 +86,7 @@ const projects = await getCollection('projects');
 
 	<section id="contact" class="max-w-7xl mx-auto px-4 pt-28 pb-6 text-center">
 		<h2 class="mb-4 text-6xl font-bold uppercase tracking-tight md:text-7xl">Get in Touch</h2>
-		<form class="mx-auto max-w-lg space-y-4 text-left">
+		<form id="contact-form" class="mx-auto max-w-lg space-y-4 text-left">
 			<div>
 				<label class="mb-2 block text-sm text-gray-600 dark:text-gray-400">Email</label>
 				<input
@@ -107,12 +107,58 @@ const projects = await getCollection('projects');
 					class="w-full rounded-md border border-gray-300 bg-transparent px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:border-gray-700"
 				></textarea>
 			</div>
+			<div class="hidden" aria-hidden="true">
+				<label for="website">Website</label>
+				<input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+			</div>
 			<button
 				type="submit"
 				class="w-full rounded-md border border-cyan-600 px-6 py-3 font-semibold uppercase tracking-wide transition-colors hover:bg-cyan-600 hover:text-white dark:border-cyan-400 dark:hover:bg-cyan-400 dark:hover:text-gray-900"
 			>
 				Send Message →
 			</button>
+			<p id="contact-status" class="text-sm" role="status"></p>
 		</form>
+
+		<script>
+			// Replace with your Deno Deploy project URL once deployed.
+			// See server/contact/main.ts for the function this calls.
+			const CONTACT_ENDPOINT = 'https://portfolio-contact-w7js6grhcfb2.tarcisio.deno.net/';
+
+			const form = document.getElementById('contact-form') as HTMLFormElement;
+			const status = document.getElementById('contact-status') as HTMLParagraphElement;
+
+			form.addEventListener('submit', async (event) => {
+				event.preventDefault();
+				const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+				const data = Object.fromEntries(new FormData(form));
+
+				submitButton.disabled = true;
+				status.textContent = 'Sending...';
+				status.className = 'text-sm text-gray-500 dark:text-gray-400';
+
+				try {
+					const response = await fetch(CONTACT_ENDPOINT, {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify(data),
+					});
+					const result = await response.json();
+
+					if (!response.ok) {
+						throw new Error(result.error ?? 'Something went wrong');
+					}
+
+					status.textContent = "Message sent — I'll get back to you soon.";
+					status.className = 'text-sm text-green-600 dark:text-green-400';
+					form.reset();
+				} catch (err) {
+					status.textContent = err instanceof Error ? err.message : 'Something went wrong';
+					status.className = 'text-sm text-red-600 dark:text-red-400';
+				} finally {
+					submitButton.disabled = false;
+				}
+			});
+		</script>
 	</section>
 </Layout>
