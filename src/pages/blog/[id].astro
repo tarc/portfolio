@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import 'katex/dist/katex.min.css';
+import { formatDate } from '../../lib/format';
 
 export async function getStaticPaths() {
 	const posts = await getCollection('blog');
@@ -16,17 +17,9 @@ const { Content } = await render(post);
 ---
 
 <Layout title={post.data.title} description={post.data.description}>
-	<article class="max-w-7xl mx-auto px-4 pt-28 pb-6">
+	<article class="max-w-3xl mx-auto px-4 pt-28 pb-6">
 		<h1 class="text-6xl font-bold uppercase tracking-tight md:text-7xl">{post.data.title}</h1>
-		<p class="text-sm text-gray-500 dark:text-gray-400">
-			{
-				post.data.pubDate.toLocaleDateString('en-US', {
-					year: 'numeric',
-					month: 'long',
-					day: 'numeric',
-				})
-			}
-		</p>
+		<p class="text-sm text-gray-500 dark:text-gray-400">{formatDate(post.data.pubDate)}</p>
 		<div class="prose prose-lg mt-8 max-w-none prose-code:before:content-none prose-code:after:content-none dark:prose-invert">
 			<Content />
 		</div>
