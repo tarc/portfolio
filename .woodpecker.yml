@@ -3,6 +3,29 @@ when:
     branch: main
 
 steps:
+  - name: cv
+    image: texlive/texlive:latest
+    environment:
+      CURRICULUM_TOKEN:
+        from_secret: codeberg_curriculum_token
+    commands:
+      - apt-get update -qq && apt-get install -y -qq --no-install-recommends git curl > /dev/null
+      - WORKSPACE=$(pwd)
+      - CURRENT_SHA=$(git ls-remote "https://tarcisio:$${CURRICULUM_TOKEN}@codeberg.org/tarcisio/curriculum.git" HEAD | cut -f1)
+      - PUBLISHED_SHA=$(curl -sf https://tarcisio.codeberg.page/curriculum.sha || echo none)
+      - |
+        if [ "$CURRENT_SHA" = "$PUBLISHED_SHA" ]; then
+          echo "CV unchanged ($CURRENT_SHA) - reusing the already-published PDF"
+          curl -sf https://tarcisio.codeberg.page/curriculum.pdf -o "$WORKSPACE/public/curriculum.pdf"
+        else
+          echo "CV changed ($PUBLISHED_SHA -> $CURRENT_SHA) - rebuilding"
+          git clone --depth 1 "https://tarcisio:$${CURRICULUM_TOKEN}@codeberg.org/tarcisio/curriculum.git" /tmp/curriculum
+          cd /tmp/curriculum
+          pdflatex -interaction=nonstopmode curriculum.tex
+          cp curriculum.pdf "$WORKSPACE/public/curriculum.pdf"
+        fi
+      - echo "$CURRENT_SHA" > "$WORKSPACE/public/curriculum.sha"
+
   - name: build
     image: node:22
     commands:
