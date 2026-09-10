@@ -13,7 +13,3 @@ inputs:
       nixpkgs:
         follows: nixpkgs
 allow_unfree: true
-secretspec:
-  enable: true
-  profile: default
-  provider: keyring

@@ -35,3 +35,12 @@ preview:
 # uploads server/contact and promotes it straight to production.
 deploy-contact:
     deno deploy server/contact --prod
+
+# One-time setup: store the curriculum repo access token in your local OS
+# keyring. The secret is declared in secretspec.toml (CODEBERG_CURRICULUM_TOKEN)
+# but intentionally NOT wired into devenv.nix's env, since devenv eagerly
+# validates secrets on every shell entry, which would require a --reason for
+# unrelated commands (e.g. `just build`). Fetch it on demand instead with:
+#   secretspec run --profile default --provider keyring --reason "<why>" -- <command>
+set-curriculum-token:
+    devenv shell -- secretspec set CODEBERG_CURRICULUM_TOKEN --provider keyring --profile default
