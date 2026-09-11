@@ -14,10 +14,10 @@ const posts = (await getCollection('blog')).sort(
 		<ul class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			{
 				posts.map((post) => (
-					<li>
+					<li class="h-full">
 						<a
 							href={`/blog/${post.id}/`}
-							class="group relative block rounded-lg border border-gray-200 p-6 transition-colors hover:border-yellow-500 hover:shadow-[0_0_0_1px_rgba(234,179,8,0.3),0_0_16px_rgba(234,179,8,0.25)] dark:border-gray-800 dark:hover:border-yellow-400"
+							class="group relative flex h-full flex-col rounded-lg border border-gray-200 p-6 transition-colors hover:border-yellow-500 hover:shadow-[0_0_0_1px_rgba(234,179,8,0.3),0_0_16px_rgba(234,179,8,0.25)] dark:border-gray-800 dark:hover:border-yellow-400"
 						>
 							<p class="absolute top-4 right-4 text-sm text-gray-500 dark:text-gray-400">
 								{formatDate(post.data.pubDate)}
