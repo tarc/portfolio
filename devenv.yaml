@@ -13,3 +13,9 @@ inputs:
       nixpkgs:
         follows: nixpkgs
 allow_unfree: true
+# Off explicitly: SECRETSPEC_PROVIDER/SECRETSPEC_PROFILE inherited from
+# another project's devenv shell (e.g. system-flakes, which enables it) would
+# otherwise turn devenv's integration on here and load secretspec.toml on
+# every shell entry. Secrets are resolved on demand; see AGENTS.md.
+secretspec:
+  enable: false

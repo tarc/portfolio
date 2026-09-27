@@ -27,7 +27,7 @@ When agent text has an error or an inconsistency, point it out rather than fixin
 
 ## Secrets
 
-Secrets needed for local scripts (e.g. fetching the private CV source repo) are declared in `secretspec.toml` and resolved from the local OS keyring — see `secretspec run --reason "..." -- <command>` and `justfile`'s `set-curriculum-token`. Do **not** wire secrets into `devenv.nix`'s `env`: devenv's own `secretspec` integration then validates every declared secret on *every* shell entry, which requires an agent `--reason` even for commands that have nothing to do with the secret (e.g. `just build`). Resolve them on demand instead.
+Secrets needed for local scripts (e.g. fetching the private CV source repo) are declared in `secretspec.toml` and resolved from the local OS keyring — see `secretspec run --reason "..." -- <command>` and `justfile`'s `set-curriculum-token`. Do **not** wire secrets into `devenv.nix`'s `env`: devenv's own `secretspec` integration then validates every declared secret on *every* shell entry, which requires an agent `--reason` even for commands that have nothing to do with the secret (e.g. `just build`). Resolve them on demand instead. For the same reason `devenv.yaml` sets `secretspec.enable: false` explicitly: devenv otherwise turns its integration on when `SECRETSPEC_PROVIDER`/`SECRETSPEC_PROFILE` are set, which they are in anything launched from a devenv shell that enables secretspec (such as system-flakes').
 
 ## Contact form
 
