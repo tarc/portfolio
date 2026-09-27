@@ -75,7 +75,8 @@ try {
     for (const url of config.urls) {
         for (const theme of config.themes) {
             for (const viewport of config.viewports) {
-                const label = `${slug(url)}${config.selector ? '-element' : ''}-${theme}-${viewport.name}`;
+                const element = config.selector ? `-${config.selector.replace(/[^a-z0-9]+/gi, '-').replace(/^-+|-+$/g, '') || 'element'}` : '';
+                const label = `${slug(url)}${element}${config.visible && !config.selector ? '-visible' : ''}-${theme}-${viewport.name}`;
                 try {
                     await shoot(send, url, theme, viewport, label);
                 } catch (error) {
@@ -108,6 +109,9 @@ async function shoot(send, url, theme, viewport, label) {
             if (exceptionDetails) throw new Error(exceptionDetails.exception?.description || exceptionDetails.text);
             return result.value;
         };
+        // Scripts added with addScriptToEvaluateOnNewDocument run only once the
+        // Page domain is enabled.
+        await send('Page.enable', {}, sessionId);
         await send('Emulation.setDeviceMetricsOverride', {width: viewport.width, height: viewport.height,
             deviceScaleFactor: viewport.scale, mobile: viewport.mobile}, sessionId);
         // The site takes a theme from localStorage first, then from
@@ -115,6 +119,12 @@ async function shoot(send, url, theme, viewport, label) {
         await send('Emulation.setEmulatedMedia', {features: [{name: 'prefers-color-scheme', value: theme}]}, sessionId);
         await send('Page.addScriptToEvaluateOnNewDocument',
             {source: `try { localStorage.setItem('theme', ${JSON.stringify(theme)}); } catch {}`}, sessionId);
+        // The dev server's toolbar is not part of the site. It can be added
+        // after the page has loaded, and its own styles win over a stylesheet
+        // of ours, so it is removed whenever it appears.
+        await send('Page.addScriptToEvaluateOnNewDocument', {source: `new MutationObserver(() => {
+            for (const toolbar of document.querySelectorAll('astro-dev-toolbar')) toolbar.remove();
+        }).observe(document, {childList: true, subtree: true});`}, sessionId);
         const {errorText} = await send('Page.navigate', {url: new URL(url, config.base).href}, sessionId);
         if (errorText) throw new Error(`Edge could not load ${new URL(url, config.base).href}: ${errorText}`);
         await settle(evaluate);
@@ -150,12 +160,19 @@ async function shoot(send, url, theme, viewport, label) {
             if (!clip) throw new Error(`no element matches ${config.selector}`);
             if (clip.count > 1) console.log(`note ${label}: ${clip.count} elements match ${config.selector}; shot the first`);
             delete clip.count;
+        } else if (config.visible) {
+            // What the screen shows: the viewport at its current scroll position,
+            // after --click has scrolled it, for example.
+            const {cssVisualViewport: v} = await send('Page.getLayoutMetrics', {}, sessionId);
+            clip = {x: v.pageX, y: v.pageY, width: v.clientWidth, height: v.clientHeight};
         } else {
             const {cssContentSize} = await send('Page.getLayoutMetrics', {}, sessionId);
             clip = {x: 0, y: 0, width: viewport.width, height: Math.ceil(cssContentSize.height)};
         }
         const {data} = await send('Page.captureScreenshot',
-            {format: 'png', captureBeyondViewport: true, clip: {...clip, scale: 1}}, sessionId);
+            // Capturing beyond the viewport stretches it to the whole page, which
+            // unsticks the sticky header; --visible must see the screen as it is.
+            {format: 'png', captureBeyondViewport: !(config.visible && !config.selector), clip: {...clip, scale: 1}}, sessionId);
         await writeFile(join(config.out, `${label}.png`), Buffer.from(data, 'base64'));
         console.log(`saved=${label}.png`);
     } finally {
@@ -163,11 +180,9 @@ async function shoot(send, url, theme, viewport, label) {
     }
 }
 
-// Loaded, fonts in, and two frames painted. The dev server's toolbar is not
-// part of the site, so it is removed from the shot.
+// Loaded, fonts in, and two frames painted.
 async function settle(evaluate) {
     await until('the page to load', () => evaluate(`document.readyState === 'complete'`));
-    await evaluate(`document.querySelector('astro-dev-toolbar')?.remove()`);
     await evaluate(`document.fonts.ready.then(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))))`);
     await sleep(200);
 }

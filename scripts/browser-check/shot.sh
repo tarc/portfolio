@@ -7,6 +7,8 @@
 #       --selector=CSS               shoot only the first matching element
 #       --pad=PX                     margin around --selector (default 24)
 #       --click=CSS                  click this element first (a real click)
+#       --visible                    shoot only what the screen shows (e.g.
+#                                    where a --click on a link scrolled to)
 #       --styles=PROP,PROP           print these computed styles of --selector
 #                                    (or body)
 #       --base=URL                   server for paths (default http://localhost:4321)
@@ -20,13 +22,13 @@ set -euo pipefail
 
 here=$(cd "$(dirname "$0")" && pwd)
 die() { echo "FAIL: $*" >&2; exit 1; }
-usage() { sed -n '2,19p' "$0" | sed 's/^# \{0,1\}//'; exit 2; }
+usage() { sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'; exit 2; }
 
 base=http://localhost:4321
 out=/tmp/portfolio-shots
 themes='["light","dark"]'
 viewport=desktop
-selector='' click='' styles='' pad=24
+selector='' click='' styles='' pad=24 visible=false
 urls=()
 for argument in "$@"; do
     case $argument in
@@ -36,6 +38,7 @@ for argument in "$@"; do
         --selector=?*) selector=${argument#--selector=} ;;
         --pad=?*) pad=${argument#--pad=} ;;
         --click=?*) click=${argument#--click=} ;;
+        --visible) visible=true ;;
         --styles=?*) styles=${argument#--styles=} ;;
         --base=?*) base=${argument#--base=} ;;
         --out=?*) out=${argument#--out=} ;;
@@ -79,9 +82,9 @@ node=${PORTFOLIO_WINDOWS_NODE:-$(powershell.exe -NoProfile -Command '(Get-Comman
 mkdir -p "$out"
 config=$(jq -n -c \
     --arg edge "$edge" --arg base "$base" --arg out "$(wslpath -w "$out")" \
-    --arg selector "$selector" --arg click "$click" --arg styles "$styles" \
+    --arg selector "$selector" --arg click "$click" --arg styles "$styles" --argjson visible "$visible" \
     --argjson pad "$pad" --argjson themes "$themes" --argjson viewports "$viewports" \
-    '{edge: $edge, base: $base, out: $out, selector: $selector, click: $click,
+    '{edge: $edge, base: $base, out: $out, selector: $selector, click: $click, visible: $visible,
       styles: ($styles | split(",") | map(select(. != ""))), pad: $pad,
       themes: $themes, viewports: $viewports, urls: $ARGS.positional}' \
     --args "${urls[@]}")

@@ -25,12 +25,15 @@ just shot /blog/la-trahison-des-mots/ --selector='.prose > div' --styles=border-
 # The home page on a phone, dark only.
 just shot / --viewport=mobile --theme=dark
 
+# Where tapping PROJECTS in the header lands, on a phone.
+just shot / --viewport=mobile --click='nav a[href="/#projects"]' --visible
+
 # The header after clicking the theme toggle.
 just shot / --theme=light --click='#theme-toggle' --selector=header --pad=0
 ```
 
 PNGs go to `/tmp/portfolio-shots` (or `--out=DIR`), named
-`<path>[-element]-<theme>-<viewport>.png`, so each run overwrites the previous
+`<path>[-<selector>]-<theme>-<viewport>.png`, so each run overwrites the previous
 shots of the same page.
 
 ## How it works
@@ -51,7 +54,7 @@ shots of the same page.
   trusted click at the element's centre.
 - **Arguments** reach Windows' Node as base64-encoded JSON, since quotes do
   not survive WSL interop.
-- Astro's dev toolbar is removed before each shot.
+- Astro's dev toolbar is removed whenever it appears in the page.
 
 ## Pitfalls
 
