@@ -1,0 +1,15 @@
+---
+title: "La trahison des mots"
+description: "How the Francophonie usually translates \"embedding\" in the sense of Bengio et al.'s 2003 neural language model."
+pubDate: 2026-09-27
+---
+
+> What's the usual translation for *embedding*, in this particular context, in the French language? I mean, if we were to translate the concept as it appeared in *A Neural Probabilistic Language Model*, representing the concept back in 2003 and onwards, what is the usual practice in the Francophonie?
+
+The most common established translation is *plongement*, usually in the phrases *plongement lexical* or *plongement de mots* (word embedding). It fits especially well because *plongement* is already the standard French term for embedding in mathematics, so the translation keeps the same link to the older mathematical sense that the English word has.
+
+A few other practices are worth knowing:
+
+- *Représentation vectorielle (de mots)*, or more loosely *vecteur de mots*, is a common descriptive alternative. It's often preferred in teaching or general-audience writing, where *plongement* can sound opaque.
+- *Représentation distribuée* matches Bengio's own framing in 2003. He described "distributed feature vectors" rather than using the word embedding, so a faithful rendering of that paper's terminology would be something like *vecteurs de caractéristiques distribués*. That's fitting, since Bengio is a Montreal-based francophone.
+- "Embedding", left in English, is very common in practice. Researchers and engineers in France, Québec, and elsewhere in the Francophonie often use the English term in speech and informal writing, just as they say *deep learning* rather than *apprentissage profond*.
