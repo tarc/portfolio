@@ -30,6 +30,11 @@ build:
 preview:
     astro preview
 
+# Screenshot pages in a headless Windows Edge (see scripts/browser-check/README.md)
+[positional-arguments]
+shot *args:
+    scripts/browser-check/shot.sh "$@"
+
 # Redeploy the contact form function to Deno Deploy. Org/app are already
 # recorded in deno.jsonc from the initial `deno deploy create`, so this just
 # uploads server/contact and promotes it straight to production.
