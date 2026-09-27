@@ -1,7 +1,7 @@
 # Plan: layout checks and visual comparison for the site
 
-Status: planned 2026-09-27, not implemented. Fold into README.md or delete
-once done.
+Status: planned 2026-09-27; step 1 (shared code) done, steps 2–6 to do.
+Fold into README.md or delete once done.
 
 Four items: shared browser code, a rule checker, proof that the rules catch
 real regressions, and an optional screenshot comparison.
@@ -50,6 +50,13 @@ Files in `scripts/browser-check/`:
 Risk to check first: Windows' Node importing `./lib/*.mjs` through the
 `\\wsl.localhost\…` path. Expected to work; fallback is bundling into one
 script at run time.
+
+Done 2026-09-27. The imports work. Also added `lib/util.mjs` (`sleep`,
+`until`, `readConfig`). Still to add where first needed: the stabilising
+parts of `settle.mjs` (eager lazy images, animations off; item 4) and
+starting/stopping `astro preview` in `common.sh` (item 2). The README
+examples plus a missing selector and a stopped server gave byte-identical
+PNGs and the same messages and exit codes before and after.
 
 ## 2. The rule checker
 

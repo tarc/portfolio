@@ -13,6 +13,17 @@ Node.
 
 Also available as `just shot ...` (inside `devenv shell`).
 
+The parts other tools can reuse live in `lib/`:
+
+| File | Contents |
+| --- | --- |
+| `common.sh` | Shell side: finds Edge and Windows' Node, checks the server answers, runs a driver under Windows' Node with its config. |
+| `edge.mjs` | `withEdge(path, use)`: a headless Edge with a throwaway profile, closed and deleted afterwards. The only Windows-specific part. |
+| `cdp.mjs` | The DevTools Protocol connection: `send` with a timeout, events. |
+| `page.mjs` | `openPage(cdp, url, {viewport, theme})`: a new tab at that size and theme, loaded and settled, with `evaluate`, `click`, `screenshot` and `close`. |
+| `settle.mjs` | Waits for the page to load, its fonts, and two painted frames. |
+| `util.mjs` | `sleep`, `until`, and reading the `--config` argument. |
+
 ## Examples
 
 ```sh

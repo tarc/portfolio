@@ -21,7 +21,7 @@
 set -euo pipefail
 
 here=$(cd "$(dirname "$0")" && pwd)
-die() { echo "FAIL: $*" >&2; exit 1; }
+. "$here/lib/common.sh"
 usage() { sed -n '2,20p' "$0" | sed 's/^# \{0,1\}//'; exit 2; }
 
 base=http://localhost:4321
@@ -63,21 +63,8 @@ case $viewport in
     *) usage ;;
 esac
 
-command -v jq >/dev/null || die "jq is missing; run inside devenv shell"
-command -v powershell.exe >/dev/null || die "no Windows interop; this needs WSL2"
-
-# Windows Edge reaches the WSL server through localhost forwarding; check the
-# server is up at all first, so a stopped server is not reported as an Edge error.
-curl -s -o /dev/null --max-time 5 "$base" || die "nothing answers at $base; start the server (astro dev --background, or astro preview)"
-
-edge=''
-for candidate in 'C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe' 'C:\Program Files\Microsoft\Edge\Application\msedge.exe'; do
-    [ -f "$(wslpath "$candidate")" ] && edge=$candidate && break
-done
-[ -n "$edge" ] || die "Microsoft Edge is not installed on Windows"
-
-node=${PORTFOLIO_WINDOWS_NODE:-$(powershell.exe -NoProfile -Command '(Get-Command node -ErrorAction SilentlyContinue).Source' </dev/null | tr -d '\r')}
-[ -n "$node" ] || die "Node is not installed on Windows (or set PORTFOLIO_WINDOWS_NODE to node.exe's Windows path)"
+find_windows_tools
+check_server "$base"
 
 mkdir -p "$out"
 config=$(jq -n -c \
@@ -90,6 +77,5 @@ config=$(jq -n -c \
     --args "${urls[@]}")
 
 status=0
-"$(wslpath "$node")" "$(wslpath -w "$here/shot.mjs")" --config="$(printf '%s' "$config" | base64 -w0)" |
-    tr -d '\r' | sed "s|^saved=|saved: $out/|" || status=$?
+run_driver "$here/shot.mjs" "$config" | sed "s|^saved=|saved: $out/|" || status=$?
 exit "$status"
