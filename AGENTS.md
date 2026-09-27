@@ -14,6 +14,17 @@ After editing `.astro`/content files, verify with `devenv shell -- npx astro bui
 
 To see how a page looks (after any visual change), use the `browser-check` skill: `devenv shell -- just shot <path>` screenshots it in a headless Windows Edge, light and dark. devenv generates the skill into `.claude/skills/` (`claude.code` in `devenv.nix`); its source is `scripts/browser-check/skill.md`, so edit that, not the generated file.
 
+## Transcripts of agent output
+
+Some posts quote agents or LLMs, e.g. `src/content/blog/la-trahison-des-mots.mdx`, a chat session written with the `UserTurn` and `Thinking` components in `src/components/chat/`. Treat the agent's words as a quotation: never change them, not even to fix spelling, grammar, capitalization, punctuation or spacing, or to make them consistent with the rest of the site. This covers the agent's replies, its status lines (`<Thinking>`), and agent output quoted anywhere else, such as a passage the user pastes into their own bubble.
+
+What may change:
+
+- Markdown structure and emphasis, to match how the original rendered (paragraphs, lists, bold and italics). Interface chrome such as action buttons and timestamps is left out.
+- The user's own turns, the frontmatter, and any text outside the transcript.
+
+When agent text has an error or an inconsistency, point it out rather than fixing it: the post records what the model actually produced.
+
 ## Secrets
 
 Secrets needed for local scripts (e.g. fetching the private CV source repo) are declared in `secretspec.toml` and resolved from the local OS keyring — see `secretspec run --reason "..." -- <command>` and `justfile`'s `set-curriculum-token`. Do **not** wire secrets into `devenv.nix`'s `env`: devenv's own `secretspec` integration then validates every declared secret on *every* shell entry, which requires an agent `--reason` even for commands that have nothing to do with the secret (e.g. `just build`). Resolve them on demand instead.
