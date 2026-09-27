@@ -17,7 +17,7 @@ const { Content } = await render(post);
 ---
 
 <Layout title={post.data.title} description={post.data.description}>
-	<article class="max-w-3xl mx-auto px-4 pt-28 pb-6">
+	<article class="max-w-3xl mx-auto px-4 pt-12 pb-6 md:pt-28">
 		<h1 class="text-5xl font-bold uppercase tracking-tight text-balance sm:text-6xl md:text-7xl">{post.data.title}</h1>
 		{post.data.subtitle && (
 			<p class="mt-4 text-2xl text-gray-500 md:text-3xl dark:text-gray-400">{post.data.subtitle}</p>
