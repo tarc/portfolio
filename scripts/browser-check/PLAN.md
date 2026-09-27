@@ -12,18 +12,19 @@ vs 72px). The first real run is expected to fail there (see step 3).
 
 ## Decisions
 
-Fill in before starting (recommendation first):
+Decided 2026-09-27; each took the recommended (first) option:
 
 1. What to check by default: a fresh build served on :4322 (recommended),
-   or the running dev server. →
+   or the running dev server. → **Fresh build on :4322.**
 2. Headline rule is 1.2× at every width, so tablet widths fail today: fix the
    headline's sizing between `sm` and `lg` (recommended), or require the
-   rule only on phones and desktop. →
-3. Screen sizes: 320, 390, 768, 1280 (recommended), or also 1024. →
+   rule only on phones and desktop. → **Fix the headline's sizing.**
+3. Screen sizes: 320, 390, 768, 1280 (recommended), or also 1024.
+   → **320, 390, 768, 1280.**
 4. Visual reference screenshots: local in `.visual/` (recommended), or
-   committed despite depending on the machine. →
+   committed despite depending on the machine. → **Local in `.visual/`.**
 5. Blog card date as `<time datetime>` (recommended, better markup and a
-   stable hook), or keep `<p>` and add `data-check`. →
+   stable hook), or keep `<p>` and add `data-check`. → **`<time datetime>`.**
 
 ---
 
