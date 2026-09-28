@@ -42,6 +42,14 @@ source of truth.
   Pages here.
 - It isn't a git remote in the local clone, and the local clone doesn't
   need one.
+- On GitHub the repo is **`tarc/portfolio`**, not `tarcisio/pages`. A
+  cloud session started from the local clone (whose `origin` is Codeberg)
+  asked GitHub for `tarcisio/pages` and failed with "Authentication failed
+  while accessing the repository" (2026-09-28). Start cloud sessions with
+  `tarc/portfolio` selected on claude.ai/code, or from a clone of
+  `git@github.com:tarc/portfolio.git`. The Claude GitHub App needs access
+  to `tarc/portfolio`. The container has no Nix, so a setup script of
+  `npm ci` is enough.
 
 ### Secrets for the CV repo
 
