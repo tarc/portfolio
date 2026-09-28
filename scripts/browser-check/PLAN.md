@@ -194,6 +194,8 @@ there; a run on Edge is still owed). The first run found, besides H1
   "Adjunctions" run off; the Adjunctions display math is wider than the
   screen.
 - B2 at 768 px: "BOOTSTRAPPING" runs into its card's date.
+- G4 (added 2026-09-28 at the user's request) at 320 px: the header's
+  "Bio" link wraps onto a row of its own, on every page.
 - G3 from md up: the home headline is 64 px below the header, other pages'
   first headings 112 px. It holds on phones, where it is now enforced.
 

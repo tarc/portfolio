@@ -98,6 +98,7 @@ user decides whether to fix the site or change the rule, run with
 | `stacked(a, b, …, {gap})` | The first match of each, top to bottom, with ≥ `gap` px between. |
 | `beside(a, b)` | b is to the right of a, level with it. |
 | `maxLines(sel, n)` | Each match's text takes at most `n` lines (content height ÷ line height). |
+| `oneRow(sel)` | All matches sit on one row (their vertical extents overlap): nothing wrapped onto a line of its own. |
 | `sameRowSameHeight(sel)` | Matches whose tops line up (a row of cards) are equally tall. |
 | `square(sel)` / `rounded(sel)` | Every corner radius is 0 / above 0. Hidden elements count too. |
 | `alignedRight(sel, column)` | Each match's right edge lines up with the column's. |
@@ -112,7 +113,8 @@ subtitle). Tolerances: ratios 1%, equal positions and sizes 2 px, minimum
 distances 0.5 px.
 
 Match on structure (`article > h1`, `time`) or on a `data-check="..."`
-attribute added for the purpose (`subtitle`, `user-turn`, `thinking`), not
+attribute added for the purpose (`nav-links`, `subtitle`, `user-turn`,
+`thinking`), not
 on style classes that a restyle would change.
 
 To add a rule: put it under a new id in `rules.mjs`, with a comment naming

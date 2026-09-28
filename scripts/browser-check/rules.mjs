@@ -7,7 +7,7 @@
 // the rule; check-layout --pending runs them too.
 import {
     alignedRight, beside, everyPage, fitsScreen, jumpLandsBelowHeader, larger, maxLines, maybe,
-    noOverflow, noOverlap, page, posts, rounded, sameAcrossPages, sameRowSameHeight, square, stacked,
+    noOverflow, noOverlap, oneRow, page, posts, rounded, sameAcrossPages, sameRowSameHeight, square, stacked,
 } from './lib/layout.mjs';
 
 const phones = ['phone-320', 'phone-390'];
@@ -86,6 +86,9 @@ export const pending = [
         // From md up the home page's first heading is 64 px below the header,
         // other pages' 112 px.
         G3: sameAcrossPages('main h1', {below: 'body > header', only: wider}),
+        // The header links on one row: at 320 px "Bio" wraps onto a row of
+        // its own.
+        G4: oneRow('[data-check="nav-links"] > a'),
     }),
     page('blog', '/blog/', {
         // Long titles ran into the date. At 768 px "BOOTSTRAPPING" still does.

@@ -119,6 +119,19 @@ export const maxLines = (selector, n, options = {}) => rule(`${selector} at most
     return checks;
 });
 
+// All matched elements sit on one row: their vertical extents overlap, so
+// none has wrapped onto a line of its own.
+export const oneRow = (selector, options = {}) => rule(`${selector} on one row`, options, async ({page}) => {
+    const checks = [];
+    const found = await find(page, selector, checks);
+    if (found.length < 2) return checks;
+    const [first] = found;
+    for (const e of found.slice(1))
+        checks.push(pass(e.top < first.bottom - EPS && first.top < e.bottom - EPS,
+            `"${e.text}" at ${fmt(e.top)}–${fmt(e.bottom)}, "${first.text}" at ${fmt(first.top)}–${fmt(first.bottom)}`, [first.id, e.id]));
+    return checks;
+});
+
 // Matched elements whose tops line up (a row of cards) have equal heights.
 export const sameRowSameHeight = (selector, options = {}) => rule(`${selector} in a row equally tall`, options, async ({page}) => {
     const checks = [];
