@@ -41,6 +41,12 @@ shot *args:
 check-layout *args:
     scripts/browser-check/check-layout.sh "$@"
 
+# Open the pictures of the last check-layout failures (or another folder) in
+# the file manager: Explorer on WSL, xdg-open on Linux
+[positional-arguments]
+check-pictures *args:
+    scripts/browser-check/open.sh "$@"
+
 # Sync the GitHub mirror (tarc/portfolio) from Codeberg now and wait until
 # GitHub's main matches. Run after pushing: Codeberg otherwise only syncs
 # every 8 hours. Needs tea's `codeberg` login.

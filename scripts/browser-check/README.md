@@ -90,8 +90,9 @@ pictures: /tmp/portfolio-checks
 ```
 
 The last two lines give the folder of the pictures; in Windows Terminal
-the Windows path is a link that opens it in Explorer, elsewhere paste it
-into Explorer's address bar. Each run first deletes the pictures of the
+the Windows path is a link that opens it in Explorer. `just check-pictures`
+opens it too: in Explorer on WSL, with `xdg-open` on Linux (`open.sh`;
+`just check-pictures DIR` for another folder). Each run first deletes the pictures of the
 previous one, so the folder holds only the current failures.
 
 ### Rules
