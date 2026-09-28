@@ -15,7 +15,7 @@ We don't care about any generality here at all. It suffices to show some specifi
 Formally, an adjunction between functors $F \dashv G$ gives a natural bijection
 
 $$
-\mathrm{Hom}_D F X, Y \cong \mathrm{Hom}_C X, G Y
+\mathrm{Hom}_D(FX, Y) \cong \mathrm{Hom}_C(X, GY)
 $$
 
 for all $X$ in $C$ and $Y$ in $D$. Masking Vassili's fingerprints on $T$ amounts to finding a $U$ related to $T$ by such an adjunction, rather than an outright isomorphism.
