@@ -1,6 +1,7 @@
 # Plan: layout checks and visual comparison for the site
 
-Status: planned 2026-09-27; step 1 (shared code) done, steps 2–6 to do.
+Status: planned 2026-09-27; steps 1–4 done (2026-09-28), steps 5–6 to do,
+plus the decisions on the first run's findings (below, under 3).
 Fold into README.md or delete once done.
 
 Four items: shared browser code, a rule checker, proof that the rules catch
@@ -181,7 +182,28 @@ each failure saves a screenshot with the offending elements outlined in red
    | `rounded-md` on one button | H3 |
    | Post title without `mt-4` on the date | P2 |
 
-3. Record results of both in README.md. Mutation tests are run by hand, not
+3. Record results of both in README.md.
+
+Done 2026-09-28, on Linux Chromium in a cloud session (Edge unavailable
+there; a run on Edge is still owed). The first run found, besides H1
+(fixed: the headline wraps to two lines at `text-8xl` between `sm` and `lg`):
+
+- G1 at 320 px: "ENGINEER" runs off the home page; the blog cards are
+  wider than the screen (the word "BOOTSTRAPPING" plus the room kept for the
+  date); the titles of "Bootstrapping This Portfolio" (also at 390 px) and
+  "Adjunctions" run off; the Adjunctions display math is wider than the
+  screen.
+- B2 at 768 px: "BOOTSTRAPPING" runs into its card's date.
+- G3 from md up: the home headline is 64 px below the header, other pages'
+  first headings 112 px. It holds on phones, where it is now enforced.
+
+Those rules are in `pending` in rules.mjs (`just check-layout --pending`)
+until the user decides on each. Two measuring changes came out of the
+first run: `noOverlap` compares text rather than padded boxes (a card
+title's box includes the room kept for the date), and a jump to the last
+section passes below the 80 px band when the page is scrolled to its end.
+Starting the server uses Astro's `preview()` API (`lib/preview.mjs`),
+since `astro preview` backgrounds itself when an AI agent runs it. Mutation tests are run by hand, not
    kept as a script (could become `just check-layout-selftest` later).
 
 ## 4. Screenshot comparison (implemented; run when the user chooses)

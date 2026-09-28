@@ -35,6 +35,12 @@ preview:
 shot *args:
     scripts/browser-check/shot.sh "$@"
 
+# Check the layout rules (scripts/browser-check/rules.mjs) on every page at
+# phone, tablet and desktop widths, against a fresh build
+[positional-arguments]
+check-layout *args:
+    scripts/browser-check/check-layout.sh "$@"
+
 # Sync the GitHub mirror (tarc/portfolio) from Codeberg now and wait until
 # GitHub's main matches. Run after pushing: Codeberg otherwise only syncs
 # every 8 hours. Needs tea's `codeberg` login.

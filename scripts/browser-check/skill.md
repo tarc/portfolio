@@ -18,6 +18,16 @@ pitfalls. This file is the order of work.
    `--selector=CSS --styles=PROP,...` and report the computed values it
    prints alongside the picture.
 
+## Check the layout
+
+After any visual change, also run `devenv shell -- just check-layout`. It
+builds the site and checks the rules in `scripts/browser-check/rules.mjs` on
+every page at 320, 390, 768 and 1280 px (about 20 s). A failure blocks the
+change: read its screenshot (failing elements outlined in red), then fix
+the site. Never loosen, scope or delete a rule to make it pass without
+asking the user. When a change fixes a problem the rules don't cover, add a
+rule for it (README.md, "Rules").
+
 ## Rules
 
 - A visual change is reported as done only after it was seen in a shot;

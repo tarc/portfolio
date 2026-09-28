@@ -35,3 +35,31 @@ run_driver() {
     "$(wslpath "$node")" "$(wslpath -w "$1")" --config="$(printf '%s' "$2" | base64 -w0)" | tr -d '\r'
     return "${PIPESTATUS[0]}"
 }
+
+# Builds the site and serves the build on $1 (a port) in the background, for
+# checking exactly what gets deployed; stop_preview stops it. Refuses a port
+# something already answers on: it could be serving an older build. Run from
+# the repository root.
+start_preview() {
+    preview_port=$1
+    ! curl -s -o /dev/null --max-time 2 "http://localhost:$preview_port/" \
+        || die "something already answers on port $preview_port; stop it, or pass --base to check it"
+    echo "building the site..." >&2
+    npx --no-install astro build >/dev/null 2>&1 || die "astro build failed; run it for the errors"
+    node "$(dirname "${BASH_SOURCE[0]}")/preview.mjs" "$preview_port" &
+    preview_pid=$!
+    for _ in $(seq 100); do
+        curl -s -o /dev/null --max-time 2 "http://localhost:$preview_port/" && return
+        kill -0 "$preview_pid" 2>/dev/null || die "the preview server exited; try astro preview for the errors"
+        sleep 0.2
+    done
+    stop_preview
+    die "the preview server did not answer on port $preview_port"
+}
+
+stop_preview() {
+    [ -n "${preview_pid:-}" ] || return 0
+    kill "$preview_pid" 2>/dev/null || true
+    wait "$preview_pid" 2>/dev/null || true
+    preview_pid=''
+}

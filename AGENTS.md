@@ -12,7 +12,7 @@ Manage the background server with `astro dev stop`, `astro dev status`, and `ast
 
 After editing `.astro`/content files, verify with `devenv shell -- npx astro build` rather than assuming — content collection schema mismatches and Astro/JSX whitespace-collapsing bugs (a line break landing right at an inline tag boundary silently eats the space) only show up in the actual build output.
 
-To see how a page looks (after any visual change), use the `browser-check` skill: `devenv shell -- just shot <path>` screenshots it in a headless Windows Edge, light and dark. devenv generates the skill into `.claude/skills/` (`claude.code` in `devenv.nix`); its source is `scripts/browser-check/skill.md`, so edit that, not the generated file.
+To see how a page looks (after any visual change), use the `browser-check` skill: `devenv shell -- just shot <path>` screenshots it in a headless Windows Edge, light and dark. After a visual change also run `devenv shell -- just check-layout`, which checks the layout rules in `scripts/browser-check/rules.mjs` on every page at four widths; a failure blocks the change, and a rule is never loosened without asking. devenv generates the skill into `.claude/skills/` (`claude.code` in `devenv.nix`); its source is `scripts/browser-check/skill.md`, so edit that, not the generated file.
 
 ## Transcripts of agent output
 
