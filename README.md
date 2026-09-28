@@ -14,11 +14,14 @@
 </p>
 
 **[Live Site](https://tarcisio.codeberg.page/)** &middot;
-[Blog](https://tarcisio.codeberg.page/blog/)
+[Blog](https://tarcisio.codeberg.page/blog/) &middot;
+[GitHub mirror](https://github.com/tarc/portfolio)
 
 </div>
 
 Built with [Astro](https://astro.build), React, and Tailwind CSS, and deployed to [Codeberg Pages](https://codeberg.page/).
+
+The source lives on [Codeberg](https://codeberg.org/tarcisio/pages); [GitHub](https://github.com/tarc/portfolio) holds a read-only mirror that Codeberg updates on every push. Changes pushed only to GitHub get overwritten at the next sync.
 
 ## Project Structure
 
