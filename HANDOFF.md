@@ -1,0 +1,144 @@
+# Handoff
+
+State as of 2026-09-28, written for an agent picking up this repo without
+access to the local machine (e.g. Claude Code on the web). Read `AGENTS.md`
+(= `CLAUDE.md`) and `README.md` first; this file adds what they don't record:
+the local agent's memory, the external repos, and how to work with Codeberg.
+
+## What the site is
+
+Tarcísio G. Rodrigues's personal portfolio: Astro + React + Tailwind,
+deployed to Codeberg Pages at <https://tarcisio.codeberg.page/>. Home page
+(hero / about / projects / contact), a blog (`src/content/blog/`), project
+cards (`src/content/projects/`), and a Bio page with a CV download.
+
+## Repositories
+
+| Repo | Role |
+| --- | --- |
+| `ssh://git@codeberg.org/tarcisio/pages.git` | **This repo** (`origin`). `main` = source; `pages` = generated site, force-pushed by CI on every run. Never edit `pages` by hand. |
+| `ssh://git@codeberg.org/tarcisio/curriculum.git` | **Private** LaTeX source of the CV (`curriculum.tex`). CI clones it with a token, runs `pdflatex`, and publishes `public/curriculum.pdf` plus `curriculum.sha`. It rebuilds only when the repo's HEAD differs from the published `https://tarcisio.codeberg.page/curriculum.sha`; otherwise it reuses the published PDF. The Bio page links `/curriculum.pdf`. |
+| `~/projects/system-flakes` (local, also on Codeberg under `tarcisio`) | The user's NixOS/home-manager config. Any change to shell/user config goes there as a module edit, never to `~/.config/*` directly. |
+
+Other Codeberg repos of the user that appear as project cards:
+`conan-dev`, `conan-flake`, `system-flakes`.
+
+### Secrets for the CV repo
+
+- CI: Woodpecker secret `codeberg_curriculum_token` (→ `CURRICULUM_TOKEN`)
+  in the `cv` step; `codeberg_token` for the deploy push. Both are set in
+  the Woodpecker repo settings (<https://ci.codeberg.org/repos/17883>).
+- Locally: `CODEBERG_CURRICULUM_TOKEN`, declared in `secretspec.toml`,
+  stored in the OS keyring (`devenv shell -- just set-curriculum-token`),
+  resolved on demand:
+  `secretspec run --profile default --provider keyring --reason "<why>" -- <command>`.
+  Do not wire it into `devenv.nix` `env` (see AGENTS.md "Secrets").
+- A remote agent has neither keyring nor token: it can't fetch the CV repo.
+  It doesn't need to; `public/curriculum.pdf` is only produced in CI.
+
+## Codeberg CLI: `tea`
+
+`tea` (Gitea/Forgejo CLI) isn't installed globally. Run it through an ad-hoc
+devenv shell (tested 2026-09-28, tea 0.15.1):
+
+```sh
+devenv -O packages:pkgs "tea" shell -- tea <command>
+```
+
+The local login is named `codeberg` (user `tarcisio`, SSH key
+`~/.ssh/id_ed25519_codeberg`, config in `~/.config/tea/config.yml`; it is
+not the default login, so pass `--login codeberg`). Examples:
+
+```sh
+tea repos list --login codeberg --output simple
+tea issues list --login codeberg --repo tarcisio/pages
+tea pulls create --login codeberg --repo tarcisio/pages --head <branch> --base main --title "..." --description "..."
+tea pulls list --login codeberg --repo tarcisio/pages
+```
+
+The `tarcisio/pages` repo had no open issues on 2026-09-28. A remote agent
+has no tea login; it would need `tea login add --name codeberg
+--url https://codeberg.org --token <token>`, and the token is the user's to
+give. `gh` doesn't work here: this is Codeberg, not GitHub.
+
+## Deployment
+
+- Push to `main` → Woodpecker (`.woodpecker.yml`): `cv` → `build`
+  (`npm ci && npx astro build`) → `deploy` (force-push `dist/` to `pages`).
+  Status badge / runs: <https://ci.codeberg.org/repos/17883>.
+- Contact form backend: `server/contact/main.ts`, a Deno Deploy function
+  (org `tarcisio`, app `portfolio-contact`, in `deno.jsonc`) that sends mail
+  through Resend. Redeploy after changes: `devenv shell -- just deploy-contact`
+  (needs the user's Deno Deploy login).
+- Only commit/push when the user asks. Pushing `main` publishes the site.
+
+## Local environment (what a remote agent won't have)
+
+- NixOS on WSL2. Commands run in `devenv shell -- <cmd>` or
+  `devenv shell -- just <recipe>`; `devenv shell -- just` lists recipes.
+- Verify `.astro`/content edits with `devenv shell -- npx astro build`.
+- Dev server: `astro dev --background` (`just dev`, `dev-status`,
+  `dev-logs`, `dev-stop`), on `http://localhost:4321`.
+- `browser-check` (`scripts/browser-check/`, `just shot <path>`) drives the
+  **Windows** Edge from WSL through the DevTools Protocol, run by Windows'
+  Node. It only works on the user's machine. Its Claude skill is generated
+  from `scripts/browser-check/skill.md` by `devenv.nix` (`claude.code`);
+  edit that source, not `.claude/skills/`.
+- Without devenv/Nix, plain `npm ci && npx astro build` (Node 22, like CI)
+  is enough to check the build.
+
+## Local agent memory (not in the repo otherwise)
+
+1. **Chat bubbles stay rounded.** The transcript components
+   (`src/components/chat/UserTurn.astro`, `rounded-2xl`) keep rounded
+   corners although project/blog cards were made sharp (6bede6b). Code
+   blocks inside bubbles keep the site's dark code style. The user chose
+   both on 2026-09-27: round corners make the bubble read as a chat message.
+   Don't "normalize" them in style passes.
+2. **Layout checks plan is in progress.** The plan is
+   `scripts/browser-check/PLAN.md` (committed in 47cd7c7, decisions in
+   83641db). All five decisions are made (each the recommended option).
+   Step 1, the shared `lib/`, is done (737c3f8). Steps 2–6 remain. When done,
+   fold PLAN.md into README.md or delete it.
+
+Also from AGENTS.md, but easy to trip over: agent/LLM text quoted in posts
+(e.g. `src/content/blog/la-trahison-des-mots.mdx`) is a quotation. Never edit
+it, not even typos; point errors out instead.
+
+## Recent work (2026-09-27)
+
+- New post "La Trahison des mots" as a chat transcript (`UserTurn`,
+  `Thinking` components), including the Magritte exchange.
+- Post subtitles; balanced post headings.
+- Phone layout pass: header fits on phones, even page tops, larger Glob
+  and Bio titles, card dates clear of titles, square buttons/fields/photo,
+  sharp project and blog cards.
+- browser-check tool added, then its browser code moved into `lib/`.
+- devenv's secretspec integration disabled explicitly in `devenv.yaml`.
+
+Working tree clean, `main` in sync with `origin/main` at 737c3f8.
+
+## Remaining steps
+
+Follow `scripts/browser-check/PLAN.md` ("Order of work and commits"):
+
+2. **Rule checker** `just check-layout` (`rules.mjs`, measuring script,
+   fresh build served on :4322 via `astro preview`, sizes 320/390/768/1280).
+   Show the first-run findings to the user; commit only the rules that pass.
+   H1 (home headline ≥ 1.2× section headings) is expected to fail at tablet
+   widths (e.g. 650px: 58.5 vs 60px).
+3. **Fix the tablet headline sizing** between `sm` and `lg` (decided), plus
+   any other fixes the user approves. Separate commit. Also switch the blog
+   card date to `<time datetime>` (decided).
+4. **Mutation tests** by hand (table in PLAN.md); record results in
+   `scripts/browser-check/README.md`.
+5. **Visual comparison** `just check-visual` with ImageMagick (add
+   `imagemagick` to `devenv.nix`), references in gitignored `.visual/`.
+6. Record the first reference set, then do a trial run.
+
+Plus the wiring listed in PLAN.md's "Documentation and wiring" (justfile
+recipes, skill description, skill.md, AGENTS.md line, `.gitignore`).
+
+Steps 2–6 need `browser-check`, so only the user's machine can run them. A
+remote agent can write the code but can't run it. Say so rather than claim
+it was verified.
