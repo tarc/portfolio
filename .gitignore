@@ -27,6 +27,9 @@ _pagefind/
 # build output
 dist/
 
+# check-visual screenshots, reference set and report (machine-specific)
+.visual/
+
 # generated types
 .astro/
 

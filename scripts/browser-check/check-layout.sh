@@ -44,16 +44,7 @@ for argument in "$@"; do
     esac
 done
 
-all='[
-  {"name":"phone-320","width":320,"height":640,"mobile":true,"scale":1},
-  {"name":"phone-390","width":390,"height":844,"mobile":true,"scale":1},
-  {"name":"tablet-768","width":768,"height":1024,"mobile":false,"scale":1},
-  {"name":"desktop-1280","width":1280,"height":800,"mobile":false,"scale":1}
-]'
-chosen=$(jq -c --arg names "$viewports" \
-    '($names | split(",") | map(select(. != ""))) as $n | if $n == [] then . else map(select(.name | IN($n[]))) end' <<<"$all")
-[ -z "$viewports" ] || [ "$(jq length <<<"$chosen")" -eq "$(tr ',' '\n' <<<"$viewports" | grep -c .)" ] \
-    || die "unknown viewport in $viewports; known: $(jq -r 'map(.name) | join(", ")' <<<"$all")"
+chosen=$(choose_viewports "$viewports")
 
 find_windows_tools
 if [ -z "$base" ]; then
@@ -81,17 +72,5 @@ config=$(jq -n -c \
 status=0
 run_driver "$here/check-layout.mjs" "$config" | sed "s|shot=|$out/|" || status=$?
 
-# Where the pictures are, also as a Windows path to paste into Explorer; in a
-# terminal that supports it (Windows Terminal), a link that opens the folder.
-if [ -n "$(pictures)" ]; then
-    windows=$(wslpath -w "$out")
-    link=$windows
-    if [ -t 1 ]; then
-        url="file:${windows//\\//}"
-        url=${url// /%20}
-        link=$'\e]8;;'"$url"$'\e\\'"$windows"$'\e]8;;\e\\'
-    fi
-    echo "pictures: $out"
-    echo "  on Windows: $link"
-fi
+[ -z "$(pictures)" ] || show_path pictures "$out"
 exit "$status"

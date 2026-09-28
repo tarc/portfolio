@@ -63,3 +63,36 @@ stop_preview() {
     wait "$preview_pid" 2>/dev/null || true
     preview_pid=''
 }
+
+# The screen sizes the checks use, as JSON; choose_viewports NAMES prints
+# those named (comma-separated; empty for all), or dies on an unknown name.
+all_viewports='[
+  {"name":"phone-320","width":320,"height":640,"mobile":true,"scale":1},
+  {"name":"phone-390","width":390,"height":844,"mobile":true,"scale":1},
+  {"name":"tablet-768","width":768,"height":1024,"mobile":false,"scale":1},
+  {"name":"desktop-1280","width":1280,"height":800,"mobile":false,"scale":1}
+]'
+choose_viewports() {
+    local chosen
+    chosen=$(jq -c --arg names "$1" \
+        '($names | split(",") | map(select(. != ""))) as $n | if $n == [] then . else map(select(.name | IN($n[]))) end' <<<"$all_viewports")
+    [ -z "$1" ] || [ "$(jq length <<<"$chosen")" -eq "$(tr ',' '\n' <<<"$1" | grep -c .)" ] \
+        || die "unknown viewport in $1; known: $(jq -r 'map(.name) | join(", ")' <<<"$all_viewports")"
+    echo "$chosen"
+}
+
+# show_path LABEL PATH: where to find a result, also as a Windows path to
+# paste into Explorer; in a terminal that supports it (Windows Terminal), a
+# link that opens it.
+show_path() {
+    local windows link url
+    echo "$1: $2"
+    windows=$(wslpath -w "$2" 2>/dev/null) || return 0
+    link=$windows
+    if [ -t 1 ]; then
+        url="file:${windows//\\//}"
+        url=${url// /%20}
+        link=$'\e]8;;'"$url"$'\e\\'"$windows"$'\e]8;;\e\\'
+    fi
+    echo "  on Windows: $link"
+}

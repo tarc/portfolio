@@ -15,6 +15,7 @@ import {join} from 'node:path';
 import {withEdge} from './lib/edge.mjs';
 import {annotate, clear, install} from './lib/measure.mjs';
 import {openPage} from './lib/page.mjs';
+import {findPages} from './lib/pages.mjs';
 import {readConfig} from './lib/util.mjs';
 import rules, {pending} from './rules.mjs';
 
@@ -104,44 +105,10 @@ const bad = failed + errors;
 console.log(`${bad ? 'FAIL' : 'PASS'}  ${loads} pages×sizes, ${checks} checks: ${checks - failed} passed, ${failed} failed${errors ? `; ${errors} errors` : ''}`);
 process.exit(bad ? 1 : 0);
 
-// The pages to check, each {name, path, rules: [[id, rule]]}, with posts
-// found by opening the list that links them.
-async function pagesToCheck(cdp) {
-    const entries = [...rules, ...(config.pending ? pending : [])];
-    const shared = entries.filter(r => r.everyPage).flatMap(r => flatten(r.rules));
-    // Entries for the same page (or list of posts) are merged.
-    const merged = new Map();
-    for (const entry of entries.filter(r => !r.everyPage)) {
-        const key = entry.posts ? `posts ${entry.posts.path}` : entry.name;
-        const known = merged.get(key);
-        merged.set(key, {...entry, rules: [...(known?.rules ?? []), ...flatten(entry.rules)]});
-    }
-    const targets = [];
-    for (const entry of merged.values()) {
-        if (entry.posts) {
-            const list = await openPage(cdp, new URL(entry.posts.path, config.base).href, {viewport: config.viewports[0], theme: 'light'});
-            try {
-                const paths = await list.evaluate(`[...document.querySelectorAll(${JSON.stringify(entry.posts.links)})].map(a => new URL(a.href).pathname)`);
-                if (!paths.length) throw new Error(`no links match ${entry.posts.links} on ${entry.posts.path}`);
-                for (const path of paths)
-                    targets.push({name: path.replace(/^\/+|\/+$/g, '').split('/').pop(), path, post: true, rules: [...shared, ...entry.rules]});
-            } finally {
-                await list.close();
-            }
-        } else {
-            targets.push({name: entry.name, path: entry.path, rules: [...shared, ...entry.rules]});
-        }
-    }
-    const wanted = config.pages;
-    if (!wanted.length) return targets;
-    const chosen = targets.filter(t => wanted.includes(t.name) || (t.post && wanted.includes('posts')));
-    const unknown = wanted.filter(w => w !== 'posts' && !targets.some(t => t.name === w));
-    if (unknown.length) throw new Error(`no page named ${unknown.join(', ')}; pages: ${targets.map(t => t.name).join(', ')}, posts`);
-    return chosen;
-}
-
-function flatten(byId) {
-    return Object.entries(byId).flatMap(([id, r]) => (Array.isArray(r) ? r : [r]).map(rule => [id, rule]));
+// The pages to check, each {name, path, post, rules: [[id, rule]]}.
+function pagesToCheck(cdp) {
+    return findPages(cdp, [...rules, ...(config.pending ? pending : [])],
+        {base: config.base, viewport: config.viewports[0], wanted: config.pages});
 }
 
 // The witness of a rule's failures on the open page: the elements framed in

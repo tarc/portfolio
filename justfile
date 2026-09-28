@@ -41,6 +41,12 @@ shot *args:
 check-layout *args:
     scripts/browser-check/check-layout.sh "$@"
 
+# Screenshot every page at every size in light and dark and compare with the
+# reference set (.visual/); --record saves a new reference set
+[positional-arguments]
+check-visual *args:
+    scripts/browser-check/check-visual.sh "$@"
+
 # Open the pictures of the last check-layout failures (or another folder) in
 # the file manager: Explorer on WSL, xdg-open on Linux
 [positional-arguments]

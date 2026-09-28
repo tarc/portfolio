@@ -1,9 +1,10 @@
 // Opens a page of the site in a new tab, at a given screen size and theme.
-import {settle} from './settle.mjs';
+import {settle, steadyScript} from './settle.mjs';
 
 // viewport: {width, height, mobile, scale}; theme: 'light' or 'dark'.
+// steady: settled for screenshots that are compared (settle.mjs).
 // Resolves to helpers for the open tab; call close() when done.
-export async function openPage(cdp, url, {viewport, theme}) {
+export async function openPage(cdp, url, {viewport, theme, steady = false}) {
     const {targetId} = await cdp.send('Target.createTarget', {url: 'about:blank'});
     const close = () => cdp.send('Target.closeTarget', {targetId}).catch(() => {});
     try {
@@ -32,9 +33,10 @@ export async function openPage(cdp, url, {viewport, theme}) {
         await send('Page.addScriptToEvaluateOnNewDocument', {source: `new MutationObserver(() => {
             for (const toolbar of document.querySelectorAll('astro-dev-toolbar')) toolbar.remove();
         }).observe(document, {childList: true, subtree: true});`});
+        if (steady) await send('Page.addScriptToEvaluateOnNewDocument', {source: steadyScript});
         const {errorText} = await send('Page.navigate', {url});
         if (errorText) throw new Error(`Edge could not load ${url}: ${errorText}`);
-        await settle(evaluate);
+        await settle(evaluate, {steady});
 
         return {
             send,

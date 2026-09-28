@@ -1,7 +1,8 @@
 # Plan: layout checks and visual comparison for the site
 
-Status: planned 2026-09-27; steps 1–4 done (2026-09-28), steps 5–6 to do,
-plus the decisions on the first run's findings (below, under 3).
+Status: planned 2026-09-27; steps 1–5 done (2026-09-28), all first-run
+findings fixed; check-layout confirmed on Windows Edge. Step 6, the first
+check-visual run on the user's machine, remains.
 Fold into README.md or delete once done.
 
 Four items: shared browser code, a rule checker, proof that the rules catch
@@ -217,7 +218,13 @@ Starting the server uses Astro's `preview()` API (`lib/preview.mjs`),
 since `astro preview` backgrounds itself when an AI agent runs it. Mutation tests are run by hand, not
    kept as a script (could become `just check-layout-selftest` later).
 
-## 4. Screenshot comparison (implemented; run when the user chooses)
+## 4. Screenshot comparison
+
+Done 2026-09-28, tried on Linux Chromium (README.md, "Visual comparison").
+Changes from the plan below: same means no differing pixel, not under 0.1%
+(a threshold in percent hid a recoloured footer line on long pages; two
+runs of an unchanged site match exactly); 64 shots (8 pages); the
+comparison lives in `compare-visual.sh`, which runs without a browser.
 
 ```
 just check-visual --record      # save current screenshots as the reference set

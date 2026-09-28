@@ -28,6 +28,18 @@ the site. Never loosen, scope or delete a rule to make it pass without
 asking the user. When a change fixes a problem the rules don't cover, add a
 rule for it (README.md, "Rules").
 
+## Compare with the reference set
+
+When a change could reach beyond what you meant to change (shared styles,
+the layout, the header or footer, a component used on several pages),
+offer to run `devenv shell -- just check-visual`: it screenshots every page
+at every size in light and dark and reports what differs from the reference
+set in `.visual/`. It is a report, not a gate. Read the changed shots
+(`.visual/latest/`, `.visual/diff/`) and tell the user which changes were
+intended and which were not. Re-record the reference set
+(`just check-visual --record`) only after the user accepts the changes.
+Before a styling change, if the reference set is stale, record it first.
+
 ## Rules
 
 - A visual change is reported as done only after it was seen in a shot;

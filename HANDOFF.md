@@ -161,14 +161,15 @@ Working tree clean, `main` in sync with `origin/main` at 737c3f8.
 
 ## Remaining steps
 
-1. The first check-layout findings are all fixed and their rules
-   enforced (PLAN.md, under 3); `pending` in `rules.mjs` is empty.
-2. **Run `just check-layout` once on Edge** to confirm it matches the
-   Chromium results.
-3. **Visual comparison** `just check-visual` with ImageMagick (add
-   `imagemagick` to `devenv.nix`, `.visual/` to `.gitignore`), references
-   in gitignored `.visual/`; then record the first reference set and do a
-   trial run (PLAN.md steps 5–6).
+The layout checks plan (`scripts/browser-check/PLAN.md`) is done but for
+its step 6, which needs the user's machine:
+
+1. **First `just check-visual` run on Edge:** `just check-visual --record`
+   for the reference set, then a small deliberate change and `just
+   check-visual` to see the report (`.visual/report.html`). It was tried
+   only on Linux Chromium with ImageMagick 6; devenv brings ImageMagick 7.
+2. Then fold PLAN.md into `scripts/browser-check/README.md` or delete it,
+   and drop the "in progress" note under "Local agent memory".
 
 Only the user's machine runs Edge. A remote agent can check with Linux
 Chromium (Playwright's, at `/opt/pw-browsers`) by running the drivers

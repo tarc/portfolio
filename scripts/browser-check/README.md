@@ -1,7 +1,8 @@
 # Browser checks from WSL2
 
-Screenshots of the site as a real browser renders it, and layout rules
-checked on every page at four screen sizes, both taken from WSL2 with
+Screenshots of the site as a real browser renders it, layout rules checked
+on every page at four screen sizes, and every page compared with a
+reference set of screenshots, all taken from WSL2 with
 the Microsoft Edge installed on Windows. The approach follows FactorSeal's
 `scripts/windows-desktop-check` (browser-check): the browser is driven
 through the Chrome DevTools Protocol by a script that runs under Windows'
@@ -13,23 +14,28 @@ Node.
 | `shot.mjs --config=BASE64` | Windows (Node) | Starts a headless Edge with a throwaway profile, then shoots each URL once per theme and viewport in its own tab, optionally clicking an element first and printing computed styles. Closes Edge and deletes the profile when done. |
 | `check-layout.sh [options]` | WSL | Builds the site, serves the build on :4322, runs `check-layout.mjs`, stops the server. `check-layout.sh --help` lists the options. |
 | `check-layout.mjs --config=BASE64` | Windows (Node) | Applies the rules in `rules.mjs` to every page at each screen size; prints failures, each with a screenshot. |
+| `check-visual.sh [options]` | WSL | Builds and serves the site like `check-layout.sh`, runs `check-visual.mjs`, then `compare-visual.sh`; with `--record`, saves the shots as the reference set instead. |
+| `check-visual.mjs --config=BASE64` | Windows (Node) | Screenshots every page, whole, at each size and theme, steadied (below). |
+| `compare-visual.sh DIR [--full]` | WSL (or any Linux) | Compares `DIR/latest` with `DIR/reference` using ImageMagick, writes `DIR/diff` and `DIR/report.html`, prints the changes. Needs no browser. |
+| `open.sh [DIR]` | WSL, Linux, macOS | Opens a folder in the file manager (default: the check-layout pictures). |
 
-Also available as `just shot ...` and `just check-layout ...` (inside
-`devenv shell`).
+Also available as `just shot ...`, `just check-layout ...`, `just
+check-visual ...` and `just check-pictures [DIR]` (inside `devenv shell`).
 
 The parts other tools can reuse live in `lib/`:
 
 | File | Contents |
 | --- | --- |
-| `common.sh` | Shell side: finds Edge and Windows' Node, checks the server answers, runs a driver under Windows' Node with its config. |
+| `common.sh` | Shell side: finds Edge and Windows' Node, checks the server answers, builds and serves the site, the screen sizes, runs a driver under Windows' Node with its config, prints where a result is (also as a Windows path). |
 | `edge.mjs` | `withEdge(path, use)`: a headless Edge with a throwaway profile, closed and deleted afterwards. The only Windows-specific part. |
 | `cdp.mjs` | The DevTools Protocol connection: `send` with a timeout, events. |
-| `page.mjs` | `openPage(cdp, url, {viewport, theme})`: a new tab at that size and theme, loaded and settled, with `evaluate`, `click`, `screenshot` and `close`. |
-| `settle.mjs` | Waits for the page to load, its fonts, and two painted frames. |
+| `page.mjs` | `openPage(cdp, url, {viewport, theme, steady})`: a new tab at that size and theme, loaded and settled, with `evaluate`, `click`, `screenshot` and `close`. |
+| `pages.mjs` | `findPages`: the site's pages from `rules.mjs`, posts found through the blog list, filtered by `--pages`. |
+| `settle.mjs` | Waits for the page to load, its fonts, and two painted frames; steady pages also get every image (lazy ones too) loaded and decoded, and no animations, transitions or caret. |
 | `util.mjs` | `sleep`, `until`, and reading the `--config` argument. |
 | `measure.mjs` | The script injected into the page to measure elements (position, font size, line count, corner radii) and to draw a failure's witness (frames, label, arrows) over the page. |
 | `layout.mjs` | The rule vocabulary `rules.mjs` is written in. |
-| `preview.mjs` | Serves `dist/` on a port until stopped (WSL side, for `check-layout.sh`). |
+| `preview.mjs` | Serves `dist/` on a port until stopped (WSL side, for `check-layout.sh` and `check-visual.sh`). |
 
 ## Examples
 
@@ -155,8 +161,62 @@ Each past bug put back by hand, one at a time, against the build (with
 | Chat bubble `rounded-none` | P4 at every size |
 
 Run 2026-09-28 in a cloud session, on Linux Chromium (the Edge driver code
-with Linux's Node and Playwright's Chromium in its place), not yet on
-Windows Edge.
+with Linux's Node and Playwright's Chromium in its place). `just
+check-layout` itself has since passed on Windows Edge.
+
+## Visual comparison
+
+```sh
+just check-visual --record     # save the current screenshots as the reference set
+just check-visual              # compare with it, write a report
+just check-visual --pages=blog --viewports=phone-390 --themes=dark
+```
+
+Every page (as in check-layout) at the four sizes in light and dark: 64
+full-page shots today, about 40 s. A report, not a gate: it exits 0 unless
+something breaks (no reference set, no server, a page that fails to load).
+
+Everything goes in `.visual/` at the repository root, gitignored:
+`reference/`, `latest/`, `diff/` and `report.html`. The reference set stays
+local because font rendering depends on the machine and on Windows and Edge
+versions. Shots are named `<page>-<size>-<theme>.png`.
+
+Each shot is `same`, `changed`, `new` (no reference) or `missing` (in the
+reference set but gone; only reported on a run over every page, size and
+theme). **Same means no pixel differs** beyond ImageMagick's 1% colour
+fuzz: two runs of an unchanged site match exactly, and a threshold in
+percent hid real changes (a recoloured footer line is under 0.1% of a long
+page). When a page's height changed, both shots are padded to the larger
+size (magenta) and the change of size is reported with the change.
+
+```
+visual: 64 shots — 28 same, 36 changed, 0 new, 0 missing
+CHANGED  blog                       phone-320     dark   19.69%  94994 px, size 320x1492 → 320x1508
+CHANGED  home                       desktop-1280  dark    0.07%  2060 px
+report: /home/…/portfolio/.visual/report.html
+  on Windows: \\wsl.localhost\NixOS\home\…\portfolio\.visual\report.html
+```
+
+`report.html` shows reference, latest and the difference (changes in red)
+side by side for each change, largest first; click one to open it full size.
+The Windows path is a link in Windows Terminal; `just check-pictures
+.visual` opens the folder.
+
+Workflow: record a reference set before a styling change if the current one
+is stale; after the change, `just check-layout` (pass/fail), then `just
+check-visual` to review everything it altered; record again once the
+changes are accepted. Expected noise: new posts, edited text, the copyright
+year each January, Windows or Edge updates (re-record after one).
+
+**Steady shots.** Pages are shot with every image loaded and decoded (lazy
+ones made eager), and with animations, transitions and the text caret
+switched off, so an unchanged page gives the same pixels every time.
+
+Tried 2026-09-28 in a cloud session, on Linux Chromium with ImageMagick 6:
+two runs of the unchanged site, 64 of 64 same; then with the blog cards
+moved 16 px down and the footer text recoloured in dark mode, 36 changed
+(the blog at every size and theme, every other page in dark) and 28 same
+(the other pages in light), as expected.
 
 ## How it works
 
