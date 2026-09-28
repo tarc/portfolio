@@ -80,8 +80,7 @@ export const pending = [
     everyPage({
         // The header ran off phones. Now fails at 320 px: "ENGINEER" on the
         // home page, the blog cards (a long title word), the titles of
-        // "Bootstrapping This Portfolio" (also 390 px) and "Adjunctions", and
-        // the Adjunctions display math.
+        // "Bootstrapping This Portfolio" (also 390 px) and "Adjunctions".
         G1: noOverflow(),
         // From md up the home page's first heading is 64 px below the header,
         // other pages' 112 px.

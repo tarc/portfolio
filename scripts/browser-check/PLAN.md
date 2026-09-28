@@ -191,8 +191,9 @@ there; a run on Edge is still owed). The first run found, besides H1
 - G1 at 320 px: "ENGINEER" runs off the home page; the blog cards are
   wider than the screen (the word "BOOTSTRAPPING" plus the room kept for the
   date); the titles of "Bootstrapping This Portfolio" (also at 390 px) and
-  "Adjunctions" run off; the Adjunctions display math is wider than the
-  screen.
+  "Adjunctions" run off; the Adjunctions display math was wider than the
+  screen (fixed: display math scrolls sideways, `.katex-display` in
+  global.css).
 - B2 at 768 px: "BOOTSTRAPPING" runs into its card's date.
 - G4 (added 2026-09-28 at the user's request) at 320 px: the header's
   "Bio" link wraps onto a row of its own, on every page.

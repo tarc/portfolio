@@ -6,3 +6,9 @@
 html {
 	scrollbar-gutter: stable;
 }
+/* Display math wider than the screen scrolls sideways instead of widening
+   the page (phones). */
+.katex-display {
+	overflow-x: auto;
+	overflow-y: hidden;
+}
