@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
-import { formatDate } from '../../lib/format';
+import { formatDate, isoDate } from '../../lib/format';
 
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
@@ -19,9 +19,12 @@ const posts = (await getCollection('blog')).sort(
 							href={`/blog/${post.id}/`}
 							class="group relative flex h-full flex-col rounded-none border border-gray-200 p-6 transition-colors hover:border-yellow-500 hover:shadow-[0_0_0_1px_rgba(234,179,8,0.3),0_0_16px_rgba(234,179,8,0.25)] dark:border-gray-800 dark:hover:border-yellow-400"
 						>
-							<p class="absolute top-6 right-6 text-base text-gray-500 dark:text-gray-400">
+							<time
+								datetime={isoDate(post.data.pubDate)}
+								class="absolute top-6 right-6 text-base text-gray-500 dark:text-gray-400"
+							>
 								{formatDate(post.data.pubDate)}
-							</p>
+							</time>
 							<h2 class="pr-28 text-2xl font-bold uppercase tracking-tight underline-offset-4 transition-colors group-hover:underline group-hover:text-yellow-600 dark:group-hover:text-yellow-400">
 								{post.data.title}
 							</h2>
