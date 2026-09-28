@@ -18,14 +18,14 @@ const { Content } = await render(post);
 
 <Layout title={post.data.title} description={post.data.description}>
 	<article class="max-w-3xl mx-auto px-4 pt-16 pb-6 md:pt-28">
-		<h1 class="text-5xl font-bold uppercase tracking-tight text-balance sm:text-6xl md:text-7xl">{post.data.title}</h1>
+		<h1 class="text-[clamp(1.75rem,10vw,3rem)] font-bold uppercase tracking-tight text-balance hyphens-auto sm:text-6xl md:text-7xl">{post.data.title}</h1>
 		{post.data.subtitle && (
 			<p data-check="subtitle" class="mt-4 text-2xl text-gray-500 md:text-3xl dark:text-gray-400">{post.data.subtitle}</p>
 		)}
 		<time datetime={isoDate(post.data.pubDate)} class="mt-4 block text-sm text-gray-500 dark:text-gray-400">
 			{formatDate(post.data.pubDate)}
 		</time>
-		<div class="prose prose-lg mt-8 max-w-none prose-code:before:content-none prose-code:after:content-none dark:prose-invert">
+		<div class="prose prose-lg mt-8 max-w-none prose-h2:text-[min(7.5vw,1.875rem)] prose-code:before:content-none prose-code:after:content-none dark:prose-invert">
 			<Content />
 		</div>
 	</article>

@@ -200,7 +200,13 @@ there; a run on Edge is still owed). The first run found, besides H1
 - G3 from md up: the home headline is 64 px below the header, other pages'
   first headings 112 px. It holds on phones, where it is now enforced.
 
-Those rules are in `pending` in rules.mjs (`just check-layout --pending`)
+Fixed 2026-09-28 (G1 and B2 now enforced): post titles scale with the
+screen below `sm` (`clamp(1.75rem,10vw,3rem)`, hyphenated as a last
+resort) and their section headings with them; blog card dates sit on
+their own line above the title; the home headline and section headings
+scale on the narrowest phones (`min(18vw,3.75rem)`, `min(14vw,3rem)`).
+
+The remaining rules are in `pending` in rules.mjs (`just check-layout --pending`)
 until the user decides on each. Two measuring changes came out of the
 first run: `noOverlap` compares text rather than padded boxes (a card
 title's box includes the room kept for the date), and a jump to the last

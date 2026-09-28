@@ -9,7 +9,7 @@ const projects = await getCollection('projects');
 
 <Layout title="Portfolio" description="Personal portfolio site">
 	<section id="hero" class="max-w-7xl mx-auto px-4 py-8 text-left">
-		<h1 class="mt-8 mb-3 text-6xl font-bold leading-none sm:text-8xl lg:whitespace-nowrap lg:text-[clamp(1.75rem,9vw,7rem)]">
+		<h1 class="mt-8 mb-3 text-[min(18vw,3.75rem)] font-bold leading-none sm:text-8xl lg:whitespace-nowrap lg:text-[clamp(1.75rem,9vw,7rem)]">
 			BACKEND ENGINEER
 		</h1>
 		<p class="mb-4 max-w-xl text-[1.2rem] text-gray-600 dark:text-gray-400">
@@ -27,7 +27,7 @@ const projects = await getCollection('projects');
 	<section id="about" class="max-w-7xl mx-auto px-4 scroll-mt-12 pt-16 pb-6 md:scroll-mt-0 md:pt-28">
 		<div class="grid gap-6 sm:grid-cols-[1fr_320px] sm:items-start">
 			<div>
-				<h2 class="mb-3 text-5xl font-bold uppercase tracking-tight sm:text-6xl md:text-7xl">About Me</h2>
+				<h2 class="mb-3 text-[min(14vw,3rem)] font-bold uppercase tracking-tight sm:text-6xl md:text-7xl">About Me</h2>
 				<p class="mt-2 text-gray-600 dark:text-gray-400">
 					I build backend systems that run where milliseconds matter, be it market data feeds,
 					payment rails, risk engines, or order management systems. As a Backend
@@ -66,7 +66,7 @@ const projects = await getCollection('projects');
 	</section>
 
 	<section id="projects" class="max-w-7xl mx-auto px-4 scroll-mt-12 pt-16 pb-6 md:scroll-mt-0 md:pt-28">
-		<h2 class="mb-3 text-5xl font-bold uppercase tracking-tight sm:text-6xl md:text-7xl">Featured Projects</h2>
+		<h2 class="mb-3 text-[min(14vw,3rem)] font-bold uppercase tracking-tight sm:text-6xl md:text-7xl">Featured Projects</h2>
 		<p class="mb-4 max-w-2xl text-[1.1rem] text-gray-600 dark:text-gray-400">
 			A selection of side projects and open-source work.
 		</p>
@@ -97,7 +97,7 @@ const projects = await getCollection('projects');
 	</section>
 
 	<section id="contact" class="max-w-7xl mx-auto px-4 scroll-mt-12 pt-16 pb-6 md:scroll-mt-0 md:pt-28 text-center">
-		<h2 class="mb-4 text-5xl font-bold uppercase tracking-tight sm:text-6xl md:text-7xl">Get in Touch</h2>
+		<h2 class="mb-4 text-[min(14vw,3rem)] font-bold uppercase tracking-tight sm:text-6xl md:text-7xl">Get in Touch</h2>
 		<form id="contact-form" class="mx-auto max-w-lg space-y-4 text-left">
 			<div>
 				<label class="mb-2 block text-sm text-gray-600 dark:text-gray-400">Email</label>

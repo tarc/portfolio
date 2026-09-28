@@ -163,10 +163,10 @@ Working tree clean, `main` in sync with `origin/main` at 737c3f8.
 
 1. **Decide on the first check-layout findings** (PLAN.md, under 3; the
    rules in `pending` in `scripts/browser-check/rules.mjs`, run with
-   `just check-layout --pending`): overflow at 320 px (home headline, blog
-   cards, two post titles), "Bio" alone on a header row at
-   320 px (G4), a card title into its date at 768 px, the home page's top gap from md up. Each is a site fix or a rule
-   change, the user's call.
+   `just check-layout --pending`): "Bio" alone on a header row at 320 px
+   (G4), and the home page's top gap from md up (G3). Each is a site fix
+   or a rule change, the user's call. (Overflow and card dates, G1 and
+   B2, were fixed and are enforced.)
 2. **Run `just check-layout` once on Edge** to confirm it matches the
    Chromium results.
 3. **Visual comparison** `just check-visual` with ImageMagick (add

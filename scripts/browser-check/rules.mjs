@@ -15,6 +15,9 @@ const wider = ['tablet-768', 'desktop-1280'];
 
 export default [
     everyPage({
+        // The header ran off phones; later long title words and display
+        // math did too.
+        G1: noOverflow(),
         G2: [
             fitsScreen('header nav a, header nav button'),
             noOverlap('header nav', 'a, button', 'a, button'),
@@ -44,6 +47,8 @@ export default [
     page('blog', '/blog/', {
         // "GLOB" was too close in size to the card titles.
         B1: larger('main h1', 'main li h2', 1.5),
+        // Long titles ran into the date.
+        B2: noOverlap('main li', 'time', 'h2', {gap: 8}),
         B3: [
             square('main li > a'),
             sameRowSameHeight('main li'),
@@ -78,19 +83,11 @@ export default [
 // Failing on the first run (2026-09-28); each waits for a decision.
 export const pending = [
     everyPage({
-        // The header ran off phones. Now fails at 320 px: "ENGINEER" on the
-        // home page, the blog cards (a long title word), the titles of
-        // "Bootstrapping This Portfolio" (also 390 px) and "Adjunctions".
-        G1: noOverflow(),
         // From md up the home page's first heading is 64 px below the header,
         // other pages' 112 px.
         G3: sameAcrossPages('main h1', {below: 'body > header', only: wider}),
         // The header links on one row: at 320 px "Bio" wraps onto a row of
         // its own.
         G4: oneRow('[data-check="nav-links"] > a'),
-    }),
-    page('blog', '/blog/', {
-        // Long titles ran into the date. At 768 px "BOOTSTRAPPING" still does.
-        B2: noOverlap('main li', 'h2', 'time', {gap: 8}),
     }),
 ];
