@@ -11,21 +11,23 @@ const posts = (await getCollection('blog')).sort(
 <Layout title="Blog" description="Posts and writing">
 	<section class="max-w-7xl mx-auto px-4 pt-16 pb-6 md:pt-28">
 		<h1 class="text-6xl font-bold uppercase tracking-tight leading-none sm:text-[clamp(1.75rem,9vw,7rem)]">Glob</h1>
+		<!-- Cards narrower than 24rem put the date on its own line above the
+		     title; wider ones put it top right, with room kept beside the title. -->
 		<ul class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
 			{
 				posts.map((post) => (
-					<li class="h-full">
+					<li class="@container h-full">
 						<a
 							href={`/blog/${post.id}/`}
-							class="group flex h-full flex-col rounded-none border border-gray-200 p-6 transition-colors hover:border-yellow-500 hover:shadow-[0_0_0_1px_rgba(234,179,8,0.3),0_0_16px_rgba(234,179,8,0.25)] dark:border-gray-800 dark:hover:border-yellow-400"
+							class="group relative flex h-full flex-col rounded-none border border-gray-200 p-6 transition-colors hover:border-yellow-500 hover:shadow-[0_0_0_1px_rgba(234,179,8,0.3),0_0_16px_rgba(234,179,8,0.25)] dark:border-gray-800 dark:hover:border-yellow-400"
 						>
 							<time
 								datetime={isoDate(post.data.pubDate)}
-								class="mb-2 text-sm text-gray-500 dark:text-gray-400"
+								class="mb-2 text-sm text-gray-500 @sm:absolute @sm:top-6 @sm:right-6 @sm:mb-0 @sm:text-base dark:text-gray-400"
 							>
 								{formatDate(post.data.pubDate)}
 							</time>
-							<h2 class="text-2xl font-bold uppercase tracking-tight underline-offset-4 transition-colors group-hover:underline group-hover:text-yellow-600 dark:group-hover:text-yellow-400">
+							<h2 class="text-2xl @sm:pr-28 font-bold uppercase tracking-tight underline-offset-4 transition-colors group-hover:underline group-hover:text-yellow-600 dark:group-hover:text-yellow-400">
 								{post.data.title}
 							</h2>
 							<p class="mt-2 text-gray-600 dark:text-gray-400">{post.data.description}</p>
