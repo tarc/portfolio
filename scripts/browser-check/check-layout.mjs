@@ -7,17 +7,19 @@
 // adds the rules awaiting a decision. pages lists the
 // page names to check (home, blog, bio, a post's slug, or posts for every
 // post); empty means all. Prints a FAIL line per failed check with shot=NAME
-// for its screenshot in out, PASS lines with verbose, then a summary. Exits
+// for its witness picture in out (the failure drawn over the page), PASS
+// lines with verbose, then a summary. Exits
 // 1 if any check failed.
 import {writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {withEdge} from './lib/edge.mjs';
-import {install, mark} from './lib/measure.mjs';
+import {annotate, clear, install} from './lib/measure.mjs';
 import {openPage} from './lib/page.mjs';
 import {readConfig} from './lib/util.mjs';
 import rules, {pending} from './rules.mjs';
 
 const config = readConfig();
+const px = n => `${+n.toFixed(1)}px`;
 let checks = 0, failed = 0, errors = 0, loads = 0;
 
 try {
@@ -50,18 +52,19 @@ try {
                                 const key = `${theme} ${viewport.name} ${id} ${rule.describe}`;
                                 const {value, checks: missing} = await rule.measure({page});
                                 if (missing) for (const c of missing) report(c.ok, where, id, rule, c.detail);
-                                else across.set(key, [...(across.get(key) ?? []), {page: target.name, value, where: `${'*'.padEnd(width)}  ${viewport.name.padEnd(12)}${config.themes.length > 1 ? ` ${theme.padEnd(5)}` : ''}`, id, rule}]);
+                                else across.set(key, [...(across.get(key) ?? []), {page: target.name, value, target, viewport, theme, id, rule,
+                                    where: `${'*'.padEnd(width)}  ${viewport.name.padEnd(12)}${config.themes.length > 1 ? ` ${theme.padEnd(5)}` : ''}`}]);
                                 continue;
                             }
                             let results;
                             try {
                                 results = await rule.run({page, viewport});
                             } catch (error) {
-                                results = [{ok: false, detail: error.message, ids: []}];
+                                results = [{ok: false, detail: error.message, marks: []}];
                             }
                             const failed = results.filter(r => !r.ok);
                             for (const r of results) report(r.ok, where, id, rule, r.detail);
-                            if (failed.length) await shoot(page, rule, failed.flatMap(r => r.ids), `${label}-${id}`);
+                            if (failed.length) await shoot(page, rule, id, viewport, failed, `${label}-${id}`);
                         }
                     } catch (error) {
                         errors++;
@@ -77,6 +80,20 @@ try {
             const {where, id, rule} = values[0];
             const r = rule.judge(values);
             report(r.ok, where, id, rule, r.detail);
+            if (r.ok) continue;
+            // Witnesses: the pages away from what most pages share.
+            for (const {page: name, value, target, viewport, theme} of values.filter(v => r.outliers.includes(v.page))) {
+                const others = values.filter(v => !r.outliers.includes(v.page)).map(v => v.page);
+                const page = await openPage(cdp, new URL(target.path, config.base).href, {viewport, theme});
+                try {
+                    await install(page);
+                    const {marks = [], span} = await rule.measure({page});
+                    const detail = `${px(value)} here; ${px(r.common)} on ${others.length > 3 ? `${others.slice(0, 3).join(', ')} and ${others.length - 3} more` : others.join(', ')}`;
+                    await shoot(page, rule, id, viewport, [{detail, marks, span}], `${name}-${viewport.name}${config.themes.length > 1 ? `-${theme}` : ''}-${id}`);
+                } finally {
+                    await page.close();
+                }
+            }
         }
     });
 } catch (error) {
@@ -127,15 +144,26 @@ function flatten(byId) {
     return Object.entries(byId).flatMap(([id, r]) => (Array.isArray(r) ? r : [r]).map(rule => [id, rule]));
 }
 
-// Screenshot with the failing elements outlined in red: what the screen shows
-// for rules that scroll (jumps), else the whole page.
-async function shoot(page, rule, ids, name) {
+// The witness of a rule's failures on the open page: the elements framed in
+// red with a label pointing at them, the screen edge or a measured distance
+// where the rule has one, cropped to that area (for jumps, what the screen
+// shows after the click).
+async function shoot(page, rule, id, viewport, failures, name) {
+    const shown = failures.slice(0, 3).map(f => `• ${f.detail}`);
+    if (failures.length > 3) shown.push(`• …and ${failures.length - 3} more`);
+    const describe = rule.describe.length > 90 ? `${rule.describe.slice(0, 89)}…` : rule.describe;
+    const label = `${id} at ${viewport.width}px: ${describe}\n${shown.join('\n')}`;
     try {
-        await mark(page, [...new Set(ids)]);
-        await writeFile(join(config.out, `${name}.png`), await page.screenshot({visible: rule.visible}));
-        await mark(page, []);
+        const clip = await annotate(page, {
+            marks: failures.flatMap(f => f.marks ?? []),
+            edge: failures.find(f => f.edge != null)?.edge,
+            span: failures.find(f => f.span)?.span,
+            label, visible: rule.visible,
+        });
+        await writeFile(join(config.out, `${name}.png`), await page.screenshot({clip, visible: rule.visible, scale: 2}));
+        await clear(page);
         console.log(`        → shot=${name}.png`);
     } catch (error) {
-        console.log(`        (no screenshot: ${error.message})`);
+        console.log(`        (no picture: ${error.message})`);
     }
 }

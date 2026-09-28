@@ -27,7 +27,7 @@ The parts other tools can reuse live in `lib/`:
 | `page.mjs` | `openPage(cdp, url, {viewport, theme})`: a new tab at that size and theme, loaded and settled, with `evaluate`, `click`, `screenshot` and `close`. |
 | `settle.mjs` | Waits for the page to load, its fonts, and two painted frames. |
 | `util.mjs` | `sleep`, `until`, and reading the `--config` argument. |
-| `measure.mjs` | The script injected into the page to measure elements (position, font size, line count, corner radii) and to outline failing ones. |
+| `measure.mjs` | The script injected into the page to measure elements (position, font size, line count, corner radii) and to draw a failure's witness (frames, label, arrows) over the page. |
 | `layout.mjs` | The rule vocabulary `rules.mjs` is written in. |
 | `preview.mjs` | Serves `dist/` on a port until stopped (WSL side, for `check-layout.sh`). |
 
@@ -70,9 +70,16 @@ Light theme unless `--themes=dark|both`; geometry does not depend on it.
 About 20 s for all 32 page × size combinations.
 
 Output is failures only (`--verbose` adds passes), then a summary; the exit
-status is 1 on any failure. Each failure saves a screenshot to
-`/tmp/portfolio-checks` with the elements it measured outlined in red: the
-whole page, or for a jump, what the screen shows after it.
+status is 1 on any failure. Each failure also gets a witness picture in
+`/tmp/portfolio-checks`, named `<page>-<size>-<rule id>.png`: the page
+cropped to the failure, with the offending elements framed in red and a
+label (rule, size, what was measured) with an arrow to each frame (to the
+first only, when there are more than three). An overflow also shows the
+screen edge as a dashed line, with the page captured wider than the screen
+so what runs past it is visible; a gap between two elements shows as a
+dimension line. A jump's picture is what the screen shows after the click.
+A rule compared across pages (`sameAcrossPages`) is pictured on the pages
+away from what most pages share. Pictures are at twice the CSS pixel size.
 
 ```
 FAIL  home  tablet-768    H1 #hero h1 font ≥ 1.2 × main h2: 69.1px vs 72px (0.96×)

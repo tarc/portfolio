@@ -57,8 +57,8 @@ export async function openPage(cdp, url, {viewport, theme}) {
             },
             // PNG as a Buffer. clip in page coordinates; without one, the
             // whole page. visible: only what the screen shows, where it is
-            // scrolled to.
-            async screenshot({clip, visible = false} = {}) {
+            // scrolled to. scale: pixels per CSS pixel.
+            async screenshot({clip, visible = false, scale = 1} = {}) {
                 if (!clip) {
                     const {cssContentSize, cssVisualViewport: v} = await send('Page.getLayoutMetrics');
                     clip = visible
@@ -68,7 +68,7 @@ export async function openPage(cdp, url, {viewport, theme}) {
                 const {data} = await send('Page.captureScreenshot',
                     // Capturing beyond the viewport stretches it to the whole page, which
                     // unsticks the sticky header; visible must see the screen as it is.
-                    {format: 'png', captureBeyondViewport: !visible, clip: {...clip, scale: 1}});
+                    {format: 'png', captureBeyondViewport: !visible, clip: {...clip, scale}});
                 return Buffer.from(data, 'base64');
             },
         };
