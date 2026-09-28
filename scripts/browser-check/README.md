@@ -85,7 +85,14 @@ away from what most pages share. Pictures are at twice the CSS pixel size.
 FAIL  home  tablet-768    H1 #hero h1 font ≥ 1.2 × main h2: 69.1px vs 72px (0.96×)
         → /tmp/portfolio-checks/home-tablet-768-H1.png
 FAIL  32 pages×sizes, 2382 checks: 2381 passed, 1 failed
+pictures: /tmp/portfolio-checks
+  on Windows: \\wsl.localhost\NixOS\tmp\portfolio-checks
 ```
+
+The last two lines give the folder of the pictures; in Windows Terminal
+the Windows path is a link that opens it in Explorer, elsewhere paste it
+into Explorer's address bar. Each run first deletes the pictures of the
+previous one, so the folder holds only the current failures.
 
 ### Rules
 
