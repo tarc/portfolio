@@ -37,6 +37,8 @@ Secrets needed for local scripts (e.g. fetching the private CV source repo) are 
 
 `.woodpecker.yml` builds and deploys automatically on push to `main` (see README's Deployment section for the full mechanism). It force-pushes generated output to the `pages` branch on every run — that branch is never meant to be edited directly.
 
+GitHub's `tarc/portfolio` is a read-only mirror of this Codeberg repo, which Codeberg syncs every 8 hours. After every push to `origin`, run `devenv shell -- just sync-mirror` (the `sync-mirror` skill) so GitHub catches up right away; cloud sessions clone from there. Never push to GitHub directly: the next sync overwrites it.
+
 ## Documentation
 
 Full documentation: https://docs.astro.build

@@ -35,6 +35,12 @@ preview:
 shot *args:
     scripts/browser-check/shot.sh "$@"
 
+# Sync the GitHub mirror (tarc/portfolio) from Codeberg now and wait until
+# GitHub's main matches. Run after pushing: Codeberg otherwise only syncs
+# every 8 hours. Needs tea's `codeberg` login.
+sync-mirror:
+    scripts/sync-mirror/sync.sh
+
 # Redeploy the contact form function to Deno Deploy. Org/app are already
 # recorded in deno.jsonc from the initial `deno deploy create`, so this just
 # uploads server/contact and promotes it straight to production.

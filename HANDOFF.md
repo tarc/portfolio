@@ -31,9 +31,18 @@ GitHub (e.g. Claude Code on the web) can clone it. Codeberg stays the
 source of truth.
 
 - Codeberg pushes to it: a push mirror on `tarcisio/pages` (created
-  2026-09-28), syncing on every commit and every 8 h, all branches.
+  2026-09-28), all branches, every 8 h. "Sync on commit" is also enabled
+  but didn't fire on three pushes on 2026-09-28, so don't rely on it.
   Settings → Mirror settings on Codeberg; `tea api --login codeberg
   /repos/tarcisio/pages/push_mirrors` shows its status.
+- **After every push to `origin`, run `devenv shell -- just sync-mirror`**
+  (`scripts/sync-mirror/sync.sh`, also the `sync-mirror` skill). It
+  triggers the sync through Codeberg's API and waits until GitHub's `main`
+  equals Codeberg's. On failure it prints the mirror's `last_error`; an
+  authentication error means the GitHub token in Codeberg's mirror
+  settings needs renewing, which only the user can do. The recipe needs
+  tea's `codeberg` login, so a remote agent can't run it. After a remote
+  session's work lands on Codeberg, the user runs it locally.
 - A push mirror overwrites the GitHub refs with Codeberg's, so anything
   pushed only to GitHub gets lost at the next sync. Put commits on Codeberg
   (`origin`). A GitHub PR is only a way to hand over a branch: the user
@@ -66,11 +75,11 @@ source of truth.
 
 ## Codeberg CLI: `tea`
 
-`tea` (Gitea/Forgejo CLI) isn't installed globally. Run it through an ad-hoc
-devenv shell (tested 2026-09-28, tea 0.15.1):
+`tea` (Gitea/Forgejo CLI, 0.15.1) is in `devenv.nix` `packages`. It isn't
+installed globally, so run it in the dev shell:
 
 ```sh
-devenv -O packages:pkgs "tea" shell -- tea <command>
+devenv shell -- tea <command>
 ```
 
 The local login is named `codeberg` (user `tarcisio`, SSH key
@@ -99,6 +108,8 @@ give. `gh` doesn't work here: this is Codeberg, not GitHub.
   through Resend. Redeploy after changes: `devenv shell -- just deploy-contact`
   (needs the user's Deno Deploy login).
 - Only commit/push when the user asks. Pushing `main` publishes the site.
+  Follow each push with `devenv shell -- just sync-mirror` (see
+  "GitHub mirror").
 
 ## Local environment (what a remote agent won't have)
 
@@ -111,7 +122,8 @@ give. `gh` doesn't work here: this is Codeberg, not GitHub.
   **Windows** Edge from WSL through the DevTools Protocol, run by Windows'
   Node. It only works on the user's machine. Its Claude skill is generated
   from `scripts/browser-check/skill.md` by `devenv.nix` (`claude.code`);
-  edit that source, not `.claude/skills/`.
+  edit that source, not `.claude/skills/`. The `sync-mirror` skill is
+  generated the same way, from `scripts/sync-mirror/skill.md`.
 - Without devenv/Nix, plain `npm ci && npx astro build` (Node 22, like CI)
   is enough to check the build.
 
