@@ -33,10 +33,6 @@
       description = "Screenshot pages of the site in a headless Windows Edge from WSL2, in light and dark and at desktop or phone width, optionally one element with its computed styles or after a click. Use to see how a page looks after any visual change (layout, colours, borders, components, dark mode) instead of inferring it from the code or asking the user for screenshots.";
       content = builtins.readFile ./scripts/browser-check/skill.md;
     };
-    skills.sync-mirror = {
-      description = "Sync the read-only GitHub mirror (tarc/portfolio) from Codeberg (tarcisio/pages) and wait until it matches. Use after every push to origin, and before the user starts a Claude Code cloud session, which clones from GitHub.";
-      content = builtins.readFile ./scripts/sync-mirror/skill.md;
-    };
 
     mcpServers = {
       # Local devenv MCP server

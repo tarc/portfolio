@@ -36,7 +36,7 @@ source of truth.
   Settings → Mirror settings on Codeberg; `tea api --login codeberg
   /repos/tarcisio/pages/push_mirrors` shows its status.
 - **After every push to `origin`, run `devenv shell -- just sync-mirror`**
-  (`scripts/sync-mirror/sync.sh`, also the `sync-mirror` skill). It
+  (`scripts/sync-mirror/sync.sh`). It
   triggers the sync through Codeberg's API and waits until GitHub's `main`
   equals Codeberg's. On failure it prints the mirror's `last_error`; an
   authentication error means the GitHub token in Codeberg's mirror
@@ -122,8 +122,7 @@ give. `gh` doesn't work here: this is Codeberg, not GitHub.
   **Windows** Edge from WSL through the DevTools Protocol, run by Windows'
   Node. It only works on the user's machine. Its Claude skill is generated
   from `scripts/browser-check/skill.md` by `devenv.nix` (`claude.code`);
-  edit that source, not `.claude/skills/`. The `sync-mirror` skill is
-  generated the same way, from `scripts/sync-mirror/skill.md`.
+  edit that source, not `.claude/skills/`.
 - Without devenv/Nix, plain `npm ci && npx astro build` (Node 22, like CI)
   is enough to check the build.
 
