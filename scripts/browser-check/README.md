@@ -218,6 +218,42 @@ moved 16 px down and the footer text recoloured in dark mode, 36 changed
 (the blog at every size and theme, every other page in dark) and 28 same
 (the other pages in light), as expected.
 
+## Why it is built this way
+
+Decided with the user on 2026-09-27, when layout checks and visual
+comparison were planned:
+
+- **A fresh build by default.** Both checks build the site and serve it on
+  :4322 rather than use the dev server: that is what gets deployed, and the
+  dev server can serve stale CSS (see Pitfalls). `--base` checks another
+  server.
+- **Four sizes:** 320, 390, 768 and 1280 px, the narrowest phone, a common
+  phone, a tablet and a desktop.
+- **Reference screenshots stay local** (`.visual/`, gitignored): font
+  rendering depends on the machine and on Windows and Edge versions.
+- **Stable hooks for rules:** dates are `<time datetime>`, and elements with
+  no structural selector get a `data-check` attribute, rather than rules
+  matching style classes.
+- **Rules are never loosened to pass.** When a rule fails on the site, the
+  user decides between fixing the site and changing the rule; until then it
+  waits in `pending` in `rules.mjs`.
+- **Shared browser code** in `lib/`, with the Windows-specific part confined
+  to `edge.mjs`, so a Linux Chromium could stand in (as it did for the
+  cloud-session runs mentioned here).
+
+What the first `check-layout` run found (2026-09-28), all since fixed and
+the rules enforced: the home headline smaller than the section headings
+at tablet widths (H1); at 320 px the home headline, the blog cards, two
+long post titles and the Adjunctions formula wider than the screen (G1); a
+card title running into its date at 768 px (B2); "Bio" alone on a header
+row at 320 px (G4); and from md up the home page's first heading 64 px
+below the header against 112 px elsewhere (G3). Fixes: the headline wraps
+to two lines between `sm` and `lg`; headlines and headings scale with the
+screen on the narrowest phones (post titles hyphenated as a last resort);
+display math scrolls sideways; card dates go above the title on cards
+narrower than 24rem; tighter header gaps on phones; `md:pt-20` on the home
+hero.
+
 ## How it works
 
 - **Why Windows' Node.** Edge runs on Windows and listens for the DevTools

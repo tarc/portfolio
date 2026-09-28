@@ -134,13 +134,13 @@ give. `gh` doesn't work here: this is Codeberg, not GitHub.
    blocks inside bubbles keep the site's dark code style. The user chose
    both on 2026-09-27: round corners make the bubble read as a chat message.
    Don't "normalize" them in style passes.
-2. **Layout checks plan is in progress.** The plan is
-   `scripts/browser-check/PLAN.md` (committed in 47cd7c7, decisions in
-   83641db). All five decisions are made (each the recommended option).
-   Steps 1–4 are done (lib/, `just check-layout`, the tablet headline
-   fix, mutation tests; the last three on 2026-09-28 in a cloud session,
-   run on Linux Chromium, not yet on Edge). Steps 5–6 remain. When done,
-   fold PLAN.md into README.md or delete it.
+2. **Browser checks are complete.** `just shot`, `just check-layout`
+   (layout rules, enforced; failures get witness pictures) and `just
+   check-visual` (screenshot comparison with a local reference set) all
+   work on the user's machine with Windows Edge, as of 2026-09-28. The plan
+   that built them was folded into `scripts/browser-check/README.md`
+   ("Why it is built this way") and deleted. After a visual change: `just
+   check-layout` must pass; offer `just check-visual`.
 
 Also from AGENTS.md, but easy to trip over: agent/LLM text quoted in posts
 (e.g. `src/content/blog/la-trahison-des-mots.mdx`) is a quotation. Never edit
@@ -161,15 +161,7 @@ Working tree clean, `main` in sync with `origin/main` at 737c3f8.
 
 ## Remaining steps
 
-The layout checks plan (`scripts/browser-check/PLAN.md`) is done but for
-its step 6, which needs the user's machine:
-
-1. **First `just check-visual` run on Edge:** `just check-visual --record`
-   for the reference set, then a small deliberate change and `just
-   check-visual` to see the report (`.visual/report.html`). It was tried
-   only on Linux Chromium with ImageMagick 6; devenv brings ImageMagick 7.
-2. Then fold PLAN.md into `scripts/browser-check/README.md` or delete it,
-   and drop the "in progress" note under "Local agent memory".
+None from the layout checks work.
 
 Only the user's machine runs Edge. A remote agent can check with Linux
 Chromium (Playwright's, at `/opt/pw-browsers`) by running the drivers

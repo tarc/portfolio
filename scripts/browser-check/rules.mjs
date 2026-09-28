@@ -1,6 +1,6 @@
 // The layout rules check-layout.mjs applies to the site. Each rule records a
-// problem fixed or a choice made; its id is the one used in PLAN.md and in
-// the output. See README.md for the vocabulary and how to add a rule.
+// problem fixed or a choice made; its id is the one in the output. See
+// README.md for the vocabulary, how to add a rule, and what the rules found.
 //
 // The default export is enforced. pending holds rules that fail on the
 // current site until the user decides between fixing the site and changing
