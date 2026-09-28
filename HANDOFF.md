@@ -137,7 +137,9 @@ give. `gh` doesn't work here: this is Codeberg, not GitHub.
 2. **Layout checks plan is in progress.** The plan is
    `scripts/browser-check/PLAN.md` (committed in 47cd7c7, decisions in
    83641db). All five decisions are made (each the recommended option).
-   Step 1, the shared `lib/`, is done (737c3f8). Steps 2–6 remain. When done,
+   Steps 1–4 are done (lib/, `just check-layout`, the tablet headline
+   fix, mutation tests; the last three on 2026-09-28 in a cloud session,
+   run on Linux Chromium, not yet on Edge). Steps 5–6 remain. When done,
    fold PLAN.md into README.md or delete it.
 
 Also from AGENTS.md, but easy to trip over: agent/LLM text quoted in posts
@@ -159,25 +161,20 @@ Working tree clean, `main` in sync with `origin/main` at 737c3f8.
 
 ## Remaining steps
 
-Follow `scripts/browser-check/PLAN.md` ("Order of work and commits"):
+1. **Decide on the first check-layout findings** (PLAN.md, under 3; the
+   rules in `pending` in `scripts/browser-check/rules.mjs`, run with
+   `just check-layout --pending`): overflow at 320 px (home headline, blog
+   cards, two post titles, Adjunctions math), a card title into its date at
+   768 px, the home page's top gap from md up. Each is a site fix or a rule
+   change, the user's call.
+2. **Run `just check-layout` once on Edge** to confirm it matches the
+   Chromium results.
+3. **Visual comparison** `just check-visual` with ImageMagick (add
+   `imagemagick` to `devenv.nix`, `.visual/` to `.gitignore`), references
+   in gitignored `.visual/`; then record the first reference set and do a
+   trial run (PLAN.md steps 5–6).
 
-2. **Rule checker** `just check-layout` (`rules.mjs`, measuring script,
-   fresh build served on :4322 via `astro preview`, sizes 320/390/768/1280).
-   Show the first-run findings to the user; commit only the rules that pass.
-   H1 (home headline ≥ 1.2× section headings) is expected to fail at tablet
-   widths (e.g. 650px: 58.5 vs 60px).
-3. **Fix the tablet headline sizing** between `sm` and `lg` (decided), plus
-   any other fixes the user approves. Separate commit. Also switch the blog
-   card date to `<time datetime>` (decided).
-4. **Mutation tests** by hand (table in PLAN.md); record results in
-   `scripts/browser-check/README.md`.
-5. **Visual comparison** `just check-visual` with ImageMagick (add
-   `imagemagick` to `devenv.nix`), references in gitignored `.visual/`.
-6. Record the first reference set, then do a trial run.
-
-Plus the wiring listed in PLAN.md's "Documentation and wiring" (justfile
-recipes, skill description, skill.md, AGENTS.md line, `.gitignore`).
-
-Steps 2–6 need `browser-check`, so only the user's machine can run them. A
-remote agent can write the code but can't run it. Say so rather than claim
-it was verified.
+Only the user's machine runs Edge. A remote agent can check with Linux
+Chromium (Playwright's, at `/opt/pw-browsers`) by running the drivers
+under Linux's Node with a wrapper that adds `--no-sandbox`; say which
+browser it was.
