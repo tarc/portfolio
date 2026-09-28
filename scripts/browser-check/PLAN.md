@@ -206,8 +206,10 @@ resort) and their section headings with them; blog card dates sit on
 their own line above the title; the home headline and section headings
 scale on the narrowest phones (`min(18vw,3.75rem)`, `min(14vw,3rem)`).
 
-The remaining rules are in `pending` in rules.mjs (`just check-layout --pending`)
-until the user decides on each. Two measuring changes came out of the
+Also fixed (G3 and G4 now enforced): the header links' gap on phones is
+8 px instead of 12, so all five fit on one row at 320 px; the home hero
+gets `md:pt-20`, so from md up its headline is 112 px below the header
+like every other page's first heading. `pending` in rules.mjs is empty. Two measuring changes came out of the
 first run: `noOverlap` compares text rather than padded boxes (a card
 title's box includes the room kept for the date), and a jump to the last
 section passes below the 80 px band when the page is scrolled to its end.

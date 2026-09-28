@@ -22,8 +22,12 @@ export default [
             fitsScreen('header nav a, header nav button'),
             noOverlap('header nav', 'a, button', 'a, button'),
         ],
-        // Page tops were 48 px on some pages and 64 px on others.
-        G3: sameAcrossPages('main h1', {below: 'body > header', only: phones}),
+        // Page tops were 48 px on some pages and 64 px on others, and from
+        // md up 64 px on home against 112 px elsewhere.
+        G3: sameAcrossPages('main h1', {below: 'body > header'}),
+        // The header links on one row: at 320 px "Bio" wrapped onto a row
+        // of its own.
+        G4: oneRow('[data-check="nav-links"] > a'),
     }),
 
     page('home', '/', {
@@ -80,14 +84,6 @@ export default [
     }),
 ];
 
-// Failing on the first run (2026-09-28); each waits for a decision.
-export const pending = [
-    everyPage({
-        // From md up the home page's first heading is 64 px below the header,
-        // other pages' 112 px.
-        G3: sameAcrossPages('main h1', {below: 'body > header', only: wider}),
-        // The header links on one row: at 320 px "Bio" wraps onto a row of
-        // its own.
-        G4: oneRow('[data-check="nav-links"] > a'),
-    }),
-];
+// Rules awaiting a decision: they fail on the current site until the user
+// chooses between fixing the site and changing the rule. None at present.
+export const pending = [];
