@@ -23,6 +23,26 @@ cards (`src/content/projects/`), and a Bio page with a CV download.
 Other Codeberg repos of the user that appear as project cards:
 `conan-dev`, `conan-flake`, `system-flakes`.
 
+### GitHub mirror
+
+`git@github.com:tarc/portfolio.git` (<https://github.com/tarc/portfolio>) is
+a read-only **mirror** of the Codeberg repo, there so tools that only speak
+GitHub (e.g. Claude Code on the web) can clone it. Codeberg stays the
+source of truth.
+
+- Codeberg pushes to it: a push mirror on `tarcisio/pages` (created
+  2026-09-28), syncing on every commit and every 8 h, all branches.
+  Settings → Mirror settings on Codeberg; `tea api --login codeberg
+  /repos/tarcisio/pages/push_mirrors` shows its status.
+- A push mirror overwrites the GitHub refs with Codeberg's, so anything
+  pushed only to GitHub gets lost at the next sync. Put commits on Codeberg
+  (`origin`). A GitHub PR is only a way to hand over a branch: the user
+  lands it on Codeberg, and the mirror then brings GitHub up to date.
+- CI, deployment and issues run only on Codeberg; GitHub has no Actions or
+  Pages here.
+- It isn't a git remote in the local clone, and the local clone doesn't
+  need one.
+
 ### Secrets for the CV repo
 
 - CI: Woodpecker secret `codeberg_curriculum_token` (→ `CURRICULUM_TOKEN`)
