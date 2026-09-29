@@ -11,8 +11,9 @@ const {
 	description = 'Personal portfolio site',
 } = Astro.props;
 
-// The section the page belongs to picks its accent colour (global.css):
-// blog pages amber, the rest cyan. aria-current marks the header link of
+// The section the page belongs to picks its accent colour for the page's
+// content (global.css): blog pages amber, the rest cyan. The header and
+// footer stay cyan on every page: amber against their cyan clashed. aria-current marks the header link of
 // the page being shown.
 const path = Astro.url.pathname;
 const section = path.startsWith('/blog') ? 'blog' : path.startsWith('/bio') ? 'bio' : 'home';
@@ -39,17 +40,17 @@ const current = (href: string) => ((href === '/' ? path === '/' : path.startsWit
 		</script>
 	</head>
 	<body data-section={section} class="min-h-screen flex flex-col bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100">
-		<header class="sticky top-0 z-10 border-b-4 border-(--accent-bright) bg-cyan-700 text-white dark:bg-cyan-900">
+		<header class="sticky top-0 z-10 border-b-4 border-cyan-300 bg-cyan-700 text-white dark:bg-cyan-900">
 			<!-- Phones: name and icons on the first row, the links on a second,
 			     full-width row. From md up: one row, as name, links, icons. -->
 			<nav class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-y-2 px-4 py-3">
 				<a href="/" class="font-semibold">TARCISIO</a>
 				<div data-check="nav-links" class="order-last flex w-full flex-wrap items-center justify-between gap-x-2 text-sm uppercase md:order-none md:ml-auto md:w-auto md:justify-start md:gap-6">
-					<a href="/" aria-current={current('/')} class="hover:text-cyan-100 aria-[current=page]:underline aria-[current=page]:decoration-(--accent-bright) aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8">Home</a>
-					<a href="/#projects" class="hover:text-cyan-100 aria-[current=page]:underline aria-[current=page]:decoration-(--accent-bright) aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8">Projects</a>
-					<a href="/#contact" class="hover:text-cyan-100 aria-[current=page]:underline aria-[current=page]:decoration-(--accent-bright) aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8">Contact</a>
-					<a href="/blog" aria-current={current('/blog')} class="hover:text-cyan-100 aria-[current=page]:underline aria-[current=page]:decoration-(--accent-bright) aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8">Blog</a>
-					<a href="/bio" aria-current={current('/bio')} class="hover:text-cyan-100 aria-[current=page]:underline aria-[current=page]:decoration-(--accent-bright) aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8">Bio</a>
+					<a href="/" aria-current={current('/')} class="hover:text-cyan-100 aria-[current=page]:underline aria-[current=page]:decoration-cyan-300 aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8">Home</a>
+					<a href="/#projects" class="hover:text-cyan-100 aria-[current=page]:underline aria-[current=page]:decoration-cyan-300 aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8">Projects</a>
+					<a href="/#contact" class="hover:text-cyan-100 aria-[current=page]:underline aria-[current=page]:decoration-cyan-300 aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8">Contact</a>
+					<a href="/blog" aria-current={current('/blog')} class="hover:text-cyan-100 aria-[current=page]:underline aria-[current=page]:decoration-cyan-300 aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8">Blog</a>
+					<a href="/bio" aria-current={current('/bio')} class="hover:text-cyan-100 aria-[current=page]:underline aria-[current=page]:decoration-cyan-300 aria-[current=page]:decoration-2 aria-[current=page]:underline-offset-8">Bio</a>
 				</div>
 				<div class="flex items-center gap-3 md:ml-10 md:gap-4 lg:gap-6">
 					<a
@@ -139,7 +140,7 @@ const current = (href: string) => ((href === '/' ? path === '/' : path.startsWit
 			<slot />
 		</main>
 
-		<footer class="border-t-4 border-(--accent-bright) bg-cyan-700 text-cyan-50 dark:bg-cyan-900">
+		<footer class="border-t-4 border-cyan-300 bg-cyan-700 text-cyan-50 dark:bg-cyan-900">
 			<div class="max-w-7xl mx-auto px-4 py-6 text-sm">
 				&copy; {new Date().getFullYear()} Tarcísio G. Rodrigues. Built with <a
 					href="https://astro.build"
