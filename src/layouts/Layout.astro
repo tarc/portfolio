@@ -12,7 +12,7 @@ const {
 } = Astro.props;
 
 // The section the page belongs to picks its accent colour (global.css):
-// blog pages yellow, the rest cyan. aria-current marks the header link of
+// blog pages amber, the rest cyan. aria-current marks the header link of
 // the page being shown.
 const path = Astro.url.pathname;
 const section = path.startsWith('/blog') ? 'blog' : path.startsWith('/bio') ? 'bio' : 'home';
