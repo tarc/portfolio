@@ -3,8 +3,39 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Always show the scrollbar: pages do not shift sideways between short and
+   long ones, and no empty gutter shows beside the coloured header and
+   footer (scrollbar-gutter: stable left one on short pages). */
 html {
-	scrollbar-gutter: stable;
+	overflow-y: scroll;
+}
+html.dark {
+	color-scheme: dark;
+}
+
+/* Accent colours by section (Layout.astro sets data-section on body): cyan
+   for home and Bio, yellow for the blog. --accent is for text on the page,
+   dark enough to read on white in light mode; --accent-bright for the
+   stripes and the current-page mark on the cyan header and footer. */
+[data-section] {
+	--accent: var(--color-cyan-700);
+	--accent-bright: var(--color-cyan-300);
+}
+.dark [data-section] {
+	--accent: var(--color-cyan-400);
+}
+[data-section="blog"] {
+	--accent: var(--color-amber-700);
+	--accent-bright: var(--color-yellow-400);
+}
+.dark [data-section="blog"] {
+	--accent: var(--color-yellow-400);
+}
+
+/* Links in the page's text take the section's accent. */
+main a.underline,
+.prose a {
+	color: var(--accent);
 }
 /* Display math wider than the screen scrolls sideways instead of widening
    the page (phones). */

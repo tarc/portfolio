@@ -142,6 +142,14 @@ give. `gh` doesn't work here: this is Codeberg, not GitHub.
    ("Why it is built this way") and deleted. After a visual change: `just
    check-layout` must pass; offer `just check-visual`.
 
+3. **Colours by section.** Header and footer are cyan (`bg-cyan-700`,
+   `dark:bg-cyan-900`) on every page, with a stripe, the current-page mark
+   and content links in the section's accent: cyan for home and Bio,
+   yellow/amber for the blog and posts. `Layout.astro` sets
+   `data-section` on `body` from the URL; the colours are the `--accent`
+   and `--accent-bright` variables in `src/styles/global.css`. A new
+   section gets its accent there. The user chose this on 2026-09-29.
+
 Also from AGENTS.md, but easy to trip over: agent/LLM text quoted in posts
 (e.g. `src/content/blog/la-trahison-des-mots.mdx`) is a quotation. Never edit
 it, not even typos; point errors out instead.
