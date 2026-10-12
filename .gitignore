@@ -15,6 +15,9 @@ devenv.local.nix
 opencode.jsonc
 .opencode/commands
 
+# codex
+.codex/config.toml
+
 # node / next.js
 .next
 out

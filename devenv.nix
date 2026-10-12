@@ -3,6 +3,15 @@
   pkgs,
   ...
 }:
+let
+  args = [ "mcp" ];
+  command = "devenv";
+  cwd = config.devenv.root;
+  DEVENV_ROOT = cwd;
+  env = {
+    inherit DEVENV_ROOT;
+  };
+in
 {
   name = "portfolio";
 
@@ -27,6 +36,17 @@
     enable = true;
   };
 
+  files.".codex/config.toml".toml = {
+    mcp_servers.devenv = {
+      inherit
+        args
+        command
+        cwd
+        env
+        ;
+    };
+  };
+
   claude.code = {
     enable = true;
 
@@ -38,12 +58,8 @@
     mcpServers = {
       # Local devenv MCP server
       devenv = {
+        inherit args command env;
         type = "stdio";
-        command = "devenv";
-        args = [ "mcp" ];
-        env = {
-          DEVENV_ROOT = config.devenv.root;
-        };
       };
     };
 
